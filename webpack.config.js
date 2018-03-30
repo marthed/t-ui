@@ -15,9 +15,7 @@ loaders.push({
 });
 
 module.exports = {
-  entry: {
-    app: './client/app.jsx'
-  },
+  entry: ['babel-polyfill', './client/app.jsx'],
   mode: 'development',
   plugins: [
     new CleanWebpackPlugin(['dist']),
@@ -25,6 +23,7 @@ module.exports = {
   module: {
     rules: loaders
   },
+  devtool: 'inline-source-map',
   output: {
     filename: 'main.bundle.js',
     path: path.resolve(__dirname, 'public/dist')
