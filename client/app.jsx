@@ -42,7 +42,10 @@ class App extends React.Component {
         console.log('Already logged in');
         this.setState({ isLoggedIn: true, accessToken: sessionStorage.getItem('accessToken')});
       }
-      else console.log('Token expiered!');
+      else {
+        console.log('Token expiered!');
+        sessionStorage.setItem('accessToken', null);
+      }
     }
     if (!loginTime) {
       console.log('Have not logged in in current session');
@@ -57,13 +60,14 @@ class App extends React.Component {
   render () {
     const { isLoggedIn, accessToken } = this.state;
     return (
-      <div className="main-container">
+      <div className="app-container">
         <div className="main-title">T-UI</div>
-        <div className="button-container">
-          {!isLoggedIn && <button>Login</button>}
-          {isLoggedIn && <MainContainer accessToken={accessToken}  />}
+          {isLoggedIn ?
+            <MainContainer accessToken={accessToken}/> :
+            <div className="button-container">
+              <button onClick={this.login}>Login</button>
+            </div>}
         </div>
-      </div>
       )
   }
 }
