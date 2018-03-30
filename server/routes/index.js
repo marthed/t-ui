@@ -21,8 +21,8 @@ router.get('/login', async function(req, res) {
     });
     res.json({ token });
   } catch (error) {
-    console.log(error);
-    res.status(500).send(error);
+    console.log('ERROR!');
+    res.status(500);
   }
 })
 

@@ -3,7 +3,9 @@ require('babel-core/register');
 import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
+import moment from 'moment';
 import styles from './style.css';
+import MainContainer from './components/mainContainer.jsx';
 
 class App extends React.Component {
 
@@ -22,16 +24,34 @@ class App extends React.Component {
         method: 'GET',
       });
       console.log('res: ', res);
-      this.setState({isLoggedIn: true, accessToken: res.data.token});
-    } catch (error) {
+      this.setState({ isLoggedIn: true, accessToken: res.data.token});
+      sessionStorage.setItem('loginTime', moment().valueOf());
+      sessionStorage.setItem('accessToken', res.data.token);
+    } 
+    catch (error) {
       console.log(error);
       this.setState({isLoggedIn: false, accessToken: null});
     }
+  }
+
+  checkLoginStatus = () => {
+    const loginTime = sessionStorage.getItem('loginTime');
     
+    if (loginTime) {
+      if (moment(Number(loginTime)).add(2, 'hours') > moment().valueOf()) {
+        console.log('Already logged in');
+        this.setState({ isLoggedIn: true, accessToken: sessionStorage.getItem('accessToken')});
+      }
+      else console.log('Token expiered!');
+    }
+    if (!loginTime) {
+      console.log('Have not logged in in current session');
+      this.login();
+    }
   }
 
   componentWillMount() {
-    this.login();
+    this.checkLoginStatus();
   }
 
   render () {
@@ -41,7 +61,7 @@ class App extends React.Component {
         <div className="main-title">T-UI</div>
         <div className="button-container">
           {!isLoggedIn && <button>Login</button>}
-          {isLoggedIn && <div>LOGGED IN!</div>}
+          {isLoggedIn && <MainContainer />}
         </div>
       </div>
       )
