@@ -55,13 +55,13 @@ class App extends React.Component {
   }
 
   render () {
-    const { isLoggedIn } = this.state;
+    const { isLoggedIn, accessToken } = this.state;
     return (
       <div className="main-container">
         <div className="main-title">T-UI</div>
         <div className="button-container">
           {!isLoggedIn && <button>Login</button>}
-          {isLoggedIn && <MainContainer />}
+          {isLoggedIn && <MainContainer accessToken={accessToken}  />}
         </div>
       </div>
       )

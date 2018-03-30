@@ -24,7 +24,29 @@ router.get('/login', async function(req, res) {
     console.log('ERROR!');
     res.status(500);
   }
-})
+});
+
+router.post('/matches', async function(req, res) {
+  try {
+    console.log('Getting matches with token: ', req.body.accessToken);
+    const { data } = await axios.request({
+      url: 'https://api.gotinder.com/v2/matches',
+      method: 'GET',
+      headers: {
+        'X-Auth-Token': `${req.body.accessToken}`,
+        'Content-type': 'application/json',
+        'User-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'
+      },
+      data: JSON.stringify({next_page_token: 'MjAxOC0wMy0yN1QwMDoyNDo1Ny40MTla'})
+    });
+    console.log(data);
+    res.json(data);
+  }
+  catch (error) {
+    console.log(error);
+    res.status(500);
+  }
+});
 
 
 module.exports = router;
