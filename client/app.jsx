@@ -4,9 +4,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 import styles from './style.css';
-import { facebookAccessToken } from './accessToken';
-
-const userID = '712536446';
 
 class App extends React.Component {
 
@@ -20,16 +17,12 @@ class App extends React.Component {
 
   login = async () => {
     try {
-      const { data: { token }} = await axios.request({
-        url: 'https://api.gotinder.com/auth',
-        method: 'POST',
-        headers: {
-          'Content-type': 'application/json',
-          'User-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'
-        },
-        data: JSON.stringify({facebook_token: facebookAccessToken, facebook_id: userID})
+     const res = await axios.request({
+        url: '/login',
+        method: 'GET',
       });
-      this.setState({isLoggedIn: true, accessToken: token});
+      console.log('res: ', res);
+      this.setState({isLoggedIn: true, accessToken: res.data.token});
     } catch (error) {
       console.log(error);
       this.setState({isLoggedIn: false, accessToken: null});
