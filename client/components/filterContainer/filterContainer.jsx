@@ -1,8 +1,5 @@
 import React from 'react';
-
-function submitFilter(hej) {
-  console.log(hej);
-}
+import './filterContainer.css';
 
 export default class FilterContainer extends React.Component {
 
@@ -16,11 +13,11 @@ export default class FilterContainer extends React.Component {
 
   toggleOpen = () => this.setState({ isOpen: !this.state.isOpen });
 
-  renderClosedContainer = () => {
-    return (
-    <div className="filter-container-closed"></div>
-    )
-  };
+  cleanFilters = () => {
+    const { setFilters } = this.props;
+    setFilters(null);
+    this.setState({isOpen: false, maxDistance: 1});
+  }
 
   handleChange = (evt) => {
     this.setState({maxDistance: evt.target.value })
@@ -34,6 +31,19 @@ export default class FilterContainer extends React.Component {
     });
     this.setState({ isOpen: false });
   }
+
+  renderClosedContainer = () => {
+    const { filters } = this.props;
+    return (
+    <div className="filter-container-closed">
+      {filters &&
+      <div className="filter-container-closed__selected-filter">
+        Max distans: {filters.distance_mi}
+      </div>
+      }
+    </div>
+    )
+  };
 
   renderOpenContainer = () => {
     const { isFetching } = this.props;
@@ -53,6 +63,9 @@ export default class FilterContainer extends React.Component {
           <div className="button-container" >
             <button onClick={this.updateFilters} disabled={isFetching}>
               {isFetching ? "Hämtar matchingar..." : "Använd filter"}
+            </button>
+            <button onClick={this.cleanFilters} disabled={isFetching}>
+              {isFetching ? "Hämtar matchingar..." : "Rensa filter"}
             </button>
           </div>
       </div>

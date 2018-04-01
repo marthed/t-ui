@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import MatchBox from './matchBox.jsx';
-import FilterContainer from './filterContainer.jsx';
+import FilterContainer from './filterContainer/filterContainer.jsx';
 
 export default class MainContainer extends React.Component {
   
@@ -21,6 +21,7 @@ export default class MainContainer extends React.Component {
       this.setState({ matches: JSON.parse(matches) });
     }
   }
+  setFilters = (filters) => this.setState({ filters: filters });
 
   getMatches = async () => {
     console.log('Getting matches...');
@@ -52,8 +53,7 @@ export default class MainContainer extends React.Component {
     }
   };
 
-  filter = (filter, match) => {
-    const { filters } = this.state;
+  filter = (filter, match, filters) => {
     switch (filter) {
       case 'distance_mi':
         return match[filter] < filters[filter];
@@ -66,20 +66,17 @@ export default class MainContainer extends React.Component {
     if (!filters || filters.length === 0) return matches;
     const filterKeys = Object.keys(filters);
     return matches.filter((match) => {
-      const hej = filterKeys.filter((filter) => this.filter(filter, match));
+      const hej = filterKeys.filter((filter) => this.filter(filter, match, filters));
       if (!hej || hej.length === 0) return false;
       return true;
     });
   }
 
-  setFilters = (filters) => this.setState({ filters: filters });
 
   renderMatches = () => {
     const { matches, isFetching, filters } = this.state;
-    // console.log('matches: ', matches);
     if (!matches || matches.length === 0) return null;
     const filteredMatches = filters ? this.filterMatches(matches, filters) : matches;
-    console.log('filteredMatches: ', filteredMatches);
 
     return filteredMatches.map((match, idx) => {
       return <MatchBox key={idx} match={match} />
@@ -95,9 +92,8 @@ export default class MainContainer extends React.Component {
     );
   }
 
-
   render () {
-    const { matches, isFetching } = this.state;
+    const { matches, isFetching, filters } = this.state;
 
     return (
       <div className="main-container">
@@ -113,6 +109,7 @@ export default class MainContainer extends React.Component {
         <FilterContainer
           setFilters={this.setFilters}
           isFetching={isFetching}
+          filters={filters}
         />
         }
         <div className="main-container__matches">
