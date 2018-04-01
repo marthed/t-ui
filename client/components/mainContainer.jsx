@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import MatchBox from './matchBox.jsx';
+import FilterContainer from './filterContainer.jsx';
 
 export default class MainContainer extends React.Component {
   
@@ -8,7 +9,8 @@ export default class MainContainer extends React.Component {
     super(props);
     this.state = {
       matches: [],
-      isFetching: false
+      isFetching: false,
+      filters: null,
     }
   }
   
@@ -50,12 +52,36 @@ export default class MainContainer extends React.Component {
     }
   };
 
-  renderMatches = () => {
-    const { matches, isFetching } = this.state;
-    console.log('matches: ', matches);
+  filter = (filter, match) => {
+    const { filters } = this.state;
+    switch (filter) {
+      case 'distance_mi':
+        return match[filter] < filters[filter];
+      default:
+        return false;
+    };
+  }
 
+  filterMatches = (matches, filters) => {
+    if (!filters || filters.length === 0) return matches;
+    const filterKeys = Object.keys(filters);
+    return matches.filter((match) => {
+      const hej = filterKeys.filter((filter) => this.filter(filter, match));
+      if (!hej || hej.length === 0) return false;
+      return true;
+    });
+  }
+
+  setFilters = (filters) => this.setState({ filters: filters });
+
+  renderMatches = () => {
+    const { matches, isFetching, filters } = this.state;
+    // console.log('matches: ', matches);
     if (!matches || matches.length === 0) return null;
-    return matches.map((match, idx) => {
+    const filteredMatches = filters ? this.filterMatches(matches, filters) : matches;
+    console.log('filteredMatches: ', filteredMatches);
+
+    return filteredMatches.map((match, idx) => {
       return <MatchBox key={idx} match={match} />
     })
     .concat(
@@ -83,6 +109,12 @@ export default class MainContainer extends React.Component {
             {isFetching ? 'Hämtar...' : "Hämta matchningar"}
           </button>
         </div>}
+        {matches.length > 0 &&
+        <FilterContainer
+          setFilters={this.setFilters}
+          isFetching={isFetching}
+        />
+        }
         <div className="main-container__matches">
           {this.renderMatches()}
         </div>
