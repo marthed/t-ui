@@ -1,2 +1,4 @@
 node_modules
 server/routes/accessToken.js
+server/ssl
+public/dist

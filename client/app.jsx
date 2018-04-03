@@ -2,6 +2,7 @@ require('babel-polyfill');
 require('babel-core/register');
 import React from 'react';
 import ReactDOM from 'react-dom';
+import FacebookAuth from 'react-facebook-auth';
 import axios from 'axios';
 import moment from 'moment';
 import styles from './style.css';
@@ -16,6 +17,17 @@ class App extends React.Component {
       accessToken: null
     }
   }
+
+  MyFacebookButton = ({ onClick }) => (
+    <button onClick={onClick}>
+      Login with facebook
+    </button>
+  );
+
+  authenticate = (response) => {
+    console.log(response);
+    // Api call to server so we can validate the token
+  };
 
   login = async () => {
     try {
@@ -65,7 +77,11 @@ class App extends React.Component {
           {isLoggedIn ?
             <MainContainer accessToken={accessToken}/> :
             <div className="button-container">
-              <button onClick={this.login}>Login</button>
+              <FacebookAuth
+                appId="369035466911957"
+                callback={this.authenticate}
+                component={this.MyFacebookButton}
+              />
             </div>}
         </div>
       )
