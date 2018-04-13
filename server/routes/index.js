@@ -3,6 +3,7 @@ const router = express.Router();
 const axios = require('axios');
 const querystring = require('querystring');
 const puppeteer = require('puppeteer');
+const decompress = require('brotli/decompress');
 
 const CREDS = require('./creds');
 const { facebookAccessToken } = require('./accessToken');
@@ -19,8 +20,9 @@ router.get('/', function(req, res) {
 });
 
 
+
 router.get('/newLogin', async function(req, res) {
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   try {
     const page = await browser.newPage();
 
@@ -40,10 +42,15 @@ router.get('/newLogin', async function(req, res) {
     }
     await timeOut();
 
-    page.on('response', response => {
+    page.on('response', async response => {
       console.log('\n \n Response!');
       const url = response.url();
       console.log(url);
+      if (url.startsWith('https://www.facebook.com/v2.6/dialog/oauth/confirm?dpr=')) {
+        console.log('HEJ!');
+        const body = await response.buffer();
+        console.log('body: ', body);
+      }
     });
 
     page.on('request', request => {
@@ -61,7 +68,6 @@ router.get('/newLogin', async function(req, res) {
     await button.screenshot({path: './button.png'});
 
     page.evaluate(e => e.click(), button);
-
 
     await timeOut();
     // await page.waitForNavigation();
