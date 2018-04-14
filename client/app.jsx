@@ -2,7 +2,6 @@ require('babel-polyfill');
 require('babel-core/register');
 import React from 'react';
 import ReactDOM from 'react-dom';
-import FacebookAuth from 'react-facebook-auth';
 import axios from 'axios';
 import moment from 'moment';
 import styles from './style.css';
@@ -14,35 +13,26 @@ class App extends React.Component {
     super(props);
     this.state= {
       isLoggedIn: false,
-      accessToken: null
+      accessToken: null,
+      isLoggingIn: false,
     }
   }
 
-  MyFacebookButton = ({ onClick }) => (
-    <button onClick={onClick}>
-      Login with facebook
-    </button>
-  );
-
-  authenticate = (response) => {
-    console.log(response);
-    // Api call to server so we can validate the token
-  };
-
   login = async () => {
+    this.setState({isLoggingIn: true});
     try {
      const res = await axios.request({
         url: '/login',
         method: 'GET',
       });
       console.log('res: ', res);
-      this.setState({ isLoggedIn: true, accessToken: res.data.token});
+      this.setState({ isLoggedIn: true, isLoggingIn: false, accessToken: res.data.tinderToken});
       sessionStorage.setItem('loginTime', moment().valueOf());
       sessionStorage.setItem('accessToken', res.data.token);
     } 
     catch (error) {
-      console.log(error);
-      this.setState({isLoggedIn: false, accessToken: null});
+      console.log(error.message);
+      this.setState({isLoggedIn: false, accessToken: null, isLoggingIn: false});
     }
   }
 
@@ -57,11 +47,8 @@ class App extends React.Component {
       else {
         console.log('Token expiered!');
         sessionStorage.setItem('accessToken', null);
+        sessionStorage.setItem('loginTime', null);
       }
-    }
-    if (!loginTime) {
-      console.log('Have not logged in in current session');
-      this.login();
     }
   }
 
@@ -70,18 +57,14 @@ class App extends React.Component {
   }
 
   render () {
-    const { isLoggedIn, accessToken } = this.state;
+    const { isLoggedIn, isLoggingIn, accessToken } = this.state;
     return (
       <div className="app-container">
         <div className="main-title">T-UI</div>
           {isLoggedIn ?
             <MainContainer accessToken={accessToken}/> :
             <div className="button-container">
-              <FacebookAuth
-                appId="369035466911957"
-                callback={this.authenticate}
-                component={this.MyFacebookButton}
-              />
+              <button onClick={this.login} disabled={isLoggingIn}>Login</button>
             </div>}
         </div>
       )
