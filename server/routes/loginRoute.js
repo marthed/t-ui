@@ -1,6 +1,5 @@
 const puppeteer = require('puppeteer');
 const axios = require('axios');
-const CREDS = require('./creds');
 
 const EMAIL_SELECTOR = '#email';
 const PASSWORD_SELECTOR = '#pass';
@@ -69,7 +68,6 @@ module.exports = async function login(req, res) {
     await page.keyboard.type(email);
     await page.click(PASSWORD_SELECTOR);
     await page.keyboard.type(password);
-    await page.screenshot({ path: './login.png' });
     await page.setJavaScriptEnabled(true); // Maybe remove
 
     const navResponse = page.waitForNavigation(['networkidle0']);
