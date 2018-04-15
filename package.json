@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": "8.9.4"
+  },
   "scripts": {
     "start": "node server/start.js",
     "client": "webpack --config webpack.config.js --watch",
