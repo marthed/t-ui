@@ -13,7 +13,9 @@ async function getBrowser() {
   if (!browserWSEndPoint) {
     console.log('No browser exists');
 
-    const browser = await puppeteer.launch({ headless: true });
+    const browser =
+      await puppeteer.launch({
+        args: ['--no-sandbox', '--disable-setuid-sandbox'], headless: true });
     browserWSEndPoint = browser.wsEndpoint();
     console.log(`Browser running on: ${browserWSEndPoint}`);
     return browser;
