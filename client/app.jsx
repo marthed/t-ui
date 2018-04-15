@@ -28,7 +28,7 @@ class App extends React.Component {
       console.log('res: ', res);
       this.setState({ isLoggedIn: true, isLoggingIn: false, accessToken: res.data.tinderToken});
       sessionStorage.setItem('loginTime', moment().valueOf());
-      sessionStorage.setItem('accessToken', res.data.token);
+      sessionStorage.setItem('accessToken', res.data.tinderToken);
     } 
     catch (error) {
       console.log(error.message);

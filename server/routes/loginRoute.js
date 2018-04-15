@@ -56,7 +56,7 @@ async function tinderLogin(accessToken, userId) {
   return token;
 };
 
-async function login(req, res) {
+module.exports = async function login(req, res) {
   try {
     const browser = await getBrowser();
     const page = await browser.newPage();
@@ -106,8 +106,4 @@ async function login(req, res) {
       code: error.code
     });
   }
-}
-
-module.exports = {
-  login
 }

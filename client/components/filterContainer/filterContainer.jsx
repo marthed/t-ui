@@ -1,4 +1,5 @@
 import React from 'react';
+//import FilterOption from './filterOption';
 import './filterContainer.css';
 
 export default class FilterContainer extends React.Component {
@@ -24,11 +25,7 @@ export default class FilterContainer extends React.Component {
   }
 
   updateFilters = () => {
-    const { maxDistance } = this.state;
-    const { setFilters } = this.props;
-    setFilters({
-      distance_mi: maxDistance
-    });
+    this.props.setFilters({ ...this.state.filters });
     this.setState({ isOpen: false });
   }
 
@@ -49,23 +46,12 @@ export default class FilterContainer extends React.Component {
     const { isFetching } = this.props;
     return (
       <div className="filter-container-open">
-          <label>
-            Max distans 
-          </label>
-          <input
-            type="number"
-            name="max_dis"
-            min="1"
-            max="500"
-            value={this.state.maxDistance}
-            onChange={this.handleChange}
-            />
           <div className="button-container" >
             <button onClick={this.updateFilters} disabled={isFetching}>
-              {isFetching ? "Hämtar matchingar..." : "Använd filter"}
+              Använd filter
             </button>
             <button onClick={this.cleanFilters} disabled={isFetching}>
-              {isFetching ? "Hämtar matchingar..." : "Rensa filter"}
+              "Rensa filter"
             </button>
           </div>
       </div>

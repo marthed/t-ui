@@ -21,14 +21,13 @@ export default class MainContainer extends React.Component {
       this.setState({ matches: JSON.parse(matches) });
     }
   }
-  setFilters = (filters) => this.setState({ filters: filters });
-
+  
   getMatches = async () => {
     console.log('Getting matches...');
     const { accessToken } = this.props;
     const pageToken = sessionStorage.getItem('pageToken');
     this.setState({isFetching: true});
-
+    
     try {
       const res = await axios.request({
         url: '/matches',
@@ -38,13 +37,13 @@ export default class MainContainer extends React.Component {
           pageToken
         }
       });
-      const { matches, next_page_token} = res.data;
-      const storedMatches = sessionStorage.getItem('matches');
-      const allMatches = storedMatches ? JSON.parse(storedMatches).concat(matches) : matches;
-
-      sessionStorage.setItem('matches', JSON.stringify(allMatches));
-      sessionStorage.setItem('pageToken', JSON.stringify(next_page_token));
-      this.setState({ matches: allMatches });
+      const { matches } = res.data;
+      //const storedMatches = sessionStorage.getItem('matches');
+      //const allMatches = storedMatches ? JSON.parse(storedMatches).concat(matches) : matches;
+      
+      sessionStorage.setItem('matches', JSON.stringify(matches));
+      //sessionStorage.setItem('pageToken', JSON.stringify(next_page_token));
+      this.setState({ matches });
       this.setState({isFetching: false});
     }
     catch (error) {
@@ -52,7 +51,9 @@ export default class MainContainer extends React.Component {
       console.log(error);
     }
   };
-
+  
+  setFilters = (filters) => this.setState({ filters });
+  
   filter = (filter, match, filters) => {
     switch (filter) {
       case 'distance_mi':
