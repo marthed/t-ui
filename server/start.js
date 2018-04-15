@@ -11,6 +11,7 @@ const certs = app.get('port') === 7777 ?
     key: privateKey,
     cert: certificate
   } : null;
+<<<<<<< HEAD
 if (certs) {
   const server = https.createServer(certs, app).listen(app.get('port'), () => {
     console.log(`Express running → PORT ${server.address().port}`);
@@ -22,3 +23,9 @@ else {
   });
 }
 
+=======
+
+const server = https.createServer(certs, app).listen(app.get('port'), () => {
+  console.log(`Express running → PORT ${server.address().port}`);
+});
+>>>>>>> bc3f7633993020fc4f122438522ee68822ee7eeb
