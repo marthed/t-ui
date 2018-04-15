@@ -46,10 +46,25 @@ async function getMatchesFromPage(accessToken, pageToken) {
     return {...results};
   }));
   console.log('next_page_token: ', next_page_token);
-  return { matches: userData, next_page_token: next_page_token };
+  console.log('userData: ', userData);
+  return { matches: userData, next_page_token };
+}
+
+const routeWrapper = (handler) => async (req, res) => {
+  try {
+    const { accessToken, pageToken } = req.body;
+    console.log('accessToken: ', accessToken);
+    console.log('pageToken: ', pageToken);
+    const { matches, next_page_token } = await handler(accessToken, pageToken);
+    res.json({matches, next_page_token});
+  } 
+  catch (error) {
+    console.log(error.message);
+    res.statusCode(500);
+  }
 }
 
 module.exports = {
-  getMatchesFromPage,
+  getMatchesFromPage: routeWrapper(getMatchesFromPage),
   getAllMatches
 }

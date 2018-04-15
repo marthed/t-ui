@@ -32,6 +32,7 @@
     "css-loader": "^0.28.11",
     "express": "^4.16.3",
     "moment": "^2.21.0",
+    "mongodb": "^3.0.6",
     "nouislider": "^11.0.3",
     "puppeteer": "^1.2.0",
     "react": "^16.2.0",

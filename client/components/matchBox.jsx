@@ -20,20 +20,32 @@ export default class MatchBox extends React.Component {
     });
   }
 
+  renderSchools = (schools) => {
+    if (!schools || schools.length === 0) return null;
+    return schools.map((school) => {
+      const { name } = school;
+      return (
+      <span key={name}>
+        {name}
+      </span>)
+    });
+  }
+
   render() {
     const { match } = this.props;
 
     return (
       <div className="match-box">
         <span>
-          <img src={match.person.photos[0].url} height="150"/>
-          <div><b>{match.person.name}</b></div>
-          <div>{this.renderBirthDate(match.person.birth_date)}</div>
+          <img src={match.photos[0].url} height="150"/>
+          <div><b>{match.name}</b></div>
+          <div>{this.renderBirthDate(match.birth_date)}</div>
           <div>Avstånd: {match.distance_mi} Km</div>
           <div>{this.renderJobs(match.jobs)}</div>
+          <div>{this.renderSchools(match.schools)}</div>
         </span>
         <br />
-        <span>{match.person.bio}</span>
+        <span>{match.bio}</span>
       </div>
       )
   }

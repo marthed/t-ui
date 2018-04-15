@@ -30,20 +30,21 @@ export default class MainContainer extends React.Component {
     
     try {
       const res = await axios.request({
-        url: '/matches',
+        url: '/matchesFromPage',
         method: 'POST',
         data: {
           accessToken,
           pageToken
         }
       });
-      const { matches } = res.data;
-      //const storedMatches = sessionStorage.getItem('matches');
-      //const allMatches = storedMatches ? JSON.parse(storedMatches).concat(matches) : matches;
+      const { matches, next_page_token } = res.data;
+      console.log('matches: ', matches);
+      const storedMatches = sessionStorage.getItem('matches');
+      const allMatches = storedMatches ? JSON.parse(storedMatches).concat(matches) : matches;
       
-      sessionStorage.setItem('matches', JSON.stringify(matches));
-      //sessionStorage.setItem('pageToken', JSON.stringify(next_page_token));
-      this.setState({ matches });
+      sessionStorage.setItem('matches', JSON.stringify(allMatches));
+      sessionStorage.setItem('pageToken', JSON.stringify(next_page_token));
+      this.setState({ matches: allMatches });
       this.setState({isFetching: false});
     }
     catch (error) {
