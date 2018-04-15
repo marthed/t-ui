@@ -9,7 +9,7 @@ const getMatchesFromPage = require('./matchesRoute').getMatchesFromPage;
 
 
 router.get('/', function(req, res) { res.send('index.html') });
-router.get('/login', loginRoute);
+router.post('/login', loginRoute);
 router.post('/matches', getAllMatches);
 router.post('/matchesFromPage', getMatchesFromPage);
 

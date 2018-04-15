@@ -4,8 +4,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from 'axios';
 import moment from 'moment';
+
 import styles from './style.css';
 import MainContainer from './components/mainContainer.jsx';
+import Login from './components/login.jsx';
 
 class App extends React.Component {
 
@@ -18,12 +20,16 @@ class App extends React.Component {
     }
   }
 
-  login = async () => {
+  login = async (email, password) => {
     this.setState({isLoggingIn: true});
     try {
      const res = await axios.request({
         url: '/login',
-        method: 'GET',
+        method: 'POST',
+        data: {
+          email,
+          password
+        }
       });
       console.log('res: ', res);
       this.setState({ isLoggedIn: true, isLoggingIn: false, accessToken: res.data.tinderToken});
@@ -64,7 +70,7 @@ class App extends React.Component {
           {isLoggedIn ?
             <MainContainer accessToken={accessToken}/> :
             <div className="button-container">
-              <button onClick={this.login} disabled={isLoggingIn}>Login</button>
+              <Login onConfirm={this.login} isLoggingIn={isLoggingIn} />
             </div>}
         </div>
       )

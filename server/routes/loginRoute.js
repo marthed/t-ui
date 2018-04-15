@@ -61,12 +61,15 @@ module.exports = async function login(req, res) {
     const browser = await getBrowser();
     const page = await browser.newPage();
 
+    const { email, password } = req.body;
+
     await page.bringToFront();
     await page.goto(FACEBOOK_LOGIN_URL);
     await page.click(EMAIL_SELECTOR);
-    await page.keyboard.type(CREDS.email);
+    await page.keyboard.type(email);
     await page.click(PASSWORD_SELECTOR);
-    await page.keyboard.type(CREDS.password);
+    await page.keyboard.type(password);
+    await page.screenshot({ path: './login.png' });
     await page.setJavaScriptEnabled(true); // Maybe remove
 
     const navResponse = page.waitForNavigation(['networkidle0']);
