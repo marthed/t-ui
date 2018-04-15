@@ -15,7 +15,7 @@ async function getBrowser() {
 
     const browser =
       await puppeteer.launch({
-        args: ['--no-sandbox', '--disable-setuid-sandbox'], headless: true });
+        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'], headless: true });
     browserWSEndPoint = browser.wsEndpoint();
     console.log(`Browser running on: ${browserWSEndPoint}`);
     return browser;
