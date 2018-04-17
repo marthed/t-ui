@@ -42,10 +42,21 @@ class App extends React.Component {
     }
   }
 
+  renderDebugImages = () => {
+    return (
+      <div className="debug-image-container">
+        <img src="http://localhost:7777/images/chrome.png"/>
+      </div>
+    )
+  }
+
   checkLoginStatus = () => {
     const loginTime = sessionStorage.getItem('loginTime');
+    const accessToken = sessionStorage.getItem('accessToken');
+    console.log('accessToken: ', accessToken);
+    console.log('loginTime: ', loginTime);
     
-    if (loginTime) {
+    if (loginTime && (accessToken !== 'undefined')) {
       if (moment(Number(loginTime)).add(2, 'hours') > moment().valueOf()) {
         console.log('Already logged in');
         this.setState({ isLoggedIn: true, accessToken: sessionStorage.getItem('accessToken')});
@@ -69,8 +80,11 @@ class App extends React.Component {
         <div className="main-title">T-UI</div>
           {isLoggedIn ?
             <MainContainer accessToken={accessToken}/> :
+            <div>
             <div className="button-container">
               <Login onConfirm={this.login} isLoggingIn={isLoggingIn} />
+            </div>
+            {this.renderDebugImages()}
             </div>}
         </div>
       )

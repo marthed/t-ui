@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const axios = require('axios');
+const path = require('path');
 
 const EMAIL_SELECTOR = '#email';
 const PASSWORD_SELECTOR = '#pass';
@@ -89,6 +90,8 @@ module.exports = async function login(req, res) {
         res.json({tinderToken: token, expiresIn, userId: id, user: name})
       }
     });
+
+    await page.screenshot({path: './public/images/chrome.png'});
 
     const button = await page.$(CONFIRM_BUTTOM_SELECTOR);
     page.evaluate(e => e.click(), button);
