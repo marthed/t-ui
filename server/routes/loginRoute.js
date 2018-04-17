@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 const axios = require('axios');
 const path = require('path');
+const fs = require('fs');
 
 const EMAIL_SELECTOR = '#email';
 const PASSWORD_SELECTOR = '#pass';
@@ -78,6 +79,9 @@ module.exports = async function login(req, res) {
     await navResponse;
     await timeOut();
 
+    const theDoc = await page.content();
+    fs.writeFileSync('./public/first.html', theDoc);
+    console.log('COMPLETE');
     page.on('response', async response => {
       if (response.url().startsWith(CONFIRM_URL)) {
         const body = await response.text();
@@ -93,7 +97,10 @@ module.exports = async function login(req, res) {
 
     await page.screenshot({path: './public/images/chrome.png'});
 
+
     const button = await page.$(CONFIRM_BUTTOM_SELECTOR);
+    console.log('button: ', button);
+
     page.evaluate(e => e.click(), button);
     await timeOut();
     await page.close();

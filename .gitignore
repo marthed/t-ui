@@ -3,4 +3,3 @@ server/routes/accessToken.js
 server/routes/creds.js
 server/ssl
 public/dist
-public/image/chrome.js
