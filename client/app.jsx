@@ -45,7 +45,7 @@ class App extends React.Component {
   renderDebugImages = () => {
     return (
       <div className="debug-image-container">
-        <img src="http://localhost:7777/images/chrome.png"/>
+        <img src="https://t-ui.herokuapp.com/images/chrome.png"/>
       </div>
     )
   }
