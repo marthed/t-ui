@@ -89,7 +89,6 @@ module.exports = async function login(req, res) {
 
     page.evaluate(e => e.click(), button1);
     await timeOut();
-    await page.close();
 
     page.on('response', async response => {
       if (response.url().startsWith(CONFIRM_URL)) {
