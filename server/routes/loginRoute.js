@@ -117,9 +117,16 @@ module.exports = async function login(req, res) {
     await page.screenshot({path: './public/images/hej4.png'});
 
     const docThree = await page.content();
-    fs.writeFileSync('./public/third.html', docTwo);
+    fs.writeFileSync('./public/third.html', docThree);
 
-    console.log('Hej4!');
+    page.click(CONTINUE_BUTTON);
+    await timeOut();
+
+    await page.screenshot({path: './public/images/hej5.png'});
+    const docFour = await page.content();
+    fs.writeFileSync('./public/third.html', docFour);
+
+    console.log('Hej5!');
 
     page.on('response', async response => {
       if (response.url().startsWith(CONFIRM_URL)) {
