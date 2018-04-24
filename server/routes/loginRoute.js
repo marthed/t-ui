@@ -124,7 +124,7 @@ module.exports = async function login(req, res) {
 
     await page.screenshot({path: './public/images/hej5.png'});
     const docFour = await page.content();
-    fs.writeFileSync('./public/third.html', docFour);
+    fs.writeFileSync('./public/fourth.html', docFour);
 
     console.log('Hej5!');
 
