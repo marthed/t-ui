@@ -85,10 +85,15 @@ module.exports = async function login(req, res) {
     fs.writeFileSync('./public/first.html', docOne);
 
     const button1 = await page.$(CONTINUE_BUTTON);
-    console.log('button: ', button1);
 
+    const navResponse2 = page.waitForNavigation(['networkidle0']);
     page.evaluate(e => e.click(), button1);
+    await navResponse2;
     await timeOut();
+
+    const docTwo = await page.content();
+    fs.writeFileSync('./public/second.html', docTwo);
+
 
     page.on('response', async response => {
       if (response.url().startsWith(CONFIRM_URL)) {
