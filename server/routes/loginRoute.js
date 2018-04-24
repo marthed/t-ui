@@ -45,7 +45,7 @@ getBrowser = async () => {
 }
 
 function timeOut() {
-  return new Promise(resolve => setTimeout(resolve, 2000)); // Improve
+  return new Promise(resolve => setTimeout(resolve, 3000)); // Improve
 }
 
 async function getUserId(accessToken) {
@@ -103,7 +103,10 @@ module.exports = async function login(req, res) {
     await page.screenshot({path: './public/images/hej1.png'});
 
     console.log('HEEJ');
-    page.evaluate(e => e.click(), button1);
+    //page.evaluate(e => e.click(), button1);
+    //const navResponse2 = page.waitForNavigation(['networkidle0']);
+    page.click(CONTINUE_BUTTON);
+    await timeOut();
     console.log('HEEJ2');
 
 
