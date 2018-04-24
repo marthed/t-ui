@@ -106,7 +106,7 @@ module.exports = async function login(req, res) {
     page.click(CONTINUE_BUTTON);
     await timeOut();
     console.log('HEEJ2');
-    await page.screenshot({path: './public/images/hej3.png'});
+    await page.screenshot({path: './public/images/hej2.png'});
 
     const docTwo = await page.content();
     fs.writeFileSync('./public/second.html', docTwo);
@@ -114,7 +114,7 @@ module.exports = async function login(req, res) {
     page.click(CONFIRM_RADIO_BUTTON);
     await timeOut();
     console.log('Heej3');
-    await page.screenshot({path: './public/images/hej4.png'});
+    await page.screenshot({path: './public/images/hej3.png'});
 
     const docThree = await page.content();
     fs.writeFileSync('./public/third.html', docThree);
@@ -122,11 +122,17 @@ module.exports = async function login(req, res) {
     page.click(CONTINUE_BUTTON);
     await timeOut();
 
-    await page.screenshot({path: './public/images/hej5.png'});
+    await page.screenshot({path: './public/images/hej4.png'});
     const docFour = await page.content();
     fs.writeFileSync('./public/fourth.html', docFour);
 
-    console.log('Hej5!');
+    page.click(CONTINUE_BUTTON);
+    await timeOut();
+    
+    await page.screenshot({path: './public/images/hej5.png'});
+    const docFifth = await page.content();
+    fs.writeFileSync('./public/fifth.html', docFifth);
+    
 
     page.on('response', async response => {
       if (response.url().startsWith(CONFIRM_URL)) {
