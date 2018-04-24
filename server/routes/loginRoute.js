@@ -102,10 +102,8 @@ module.exports = async function login(req, res) {
 
     await page.screenshot({path: './public/images/hej1.png'});
 
-    const navResponse2 = page.waitForNavigation(['networkidle0']);
     console.log('HEEJ');
     page.evaluate(e => e.click(), button1);
-    await navResponse2;
     console.log('HEEJ2');
 
 
