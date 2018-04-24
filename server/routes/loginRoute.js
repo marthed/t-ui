@@ -12,21 +12,36 @@ const FACEBOOK_LOGIN_URL = "https://www.facebook.com/v2.6/dialog/oauth?redirect_
 
 const CONTINUE_BUTTON = '#checkpointSubmitButton';
 
-let browserWSEndPoint = null;
-async function getBrowser() {
-  if (!browserWSEndPoint) {
-    console.log('No browser exists');
-
-    const browser =
-      await puppeteer.launch({
-        args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'], headless: true });
-    browserWSEndPoint = browser.wsEndpoint();
-    console.log(`Browser running on: ${browserWSEndPoint}`);
-    return browser;
+var BrowserEP = (function () {
+  var instance;
+  function createInstance(ep) {
+    var endPoint = ep;
+    return endPoint;
   }
+  return {
+    getInstance: function (ep) {
+      if (!instance) {
+        instance = createInstance(ep);
+      }
+      return instance;
+    }
+  }
+})();
+
+getBrowser = async () => {
+  if (BrowserEP.getInstance()) {
+    const browserWSEndpoint = BrowserEP.getInstance();
     console.log(`Connecting to browser on: ${browserWSEndpoint}`)
     const connectedBrowser = await puppeteer.connect({ browserWSEndpoint });
     return connectedBrowser;
+  }
+  console.log('No browser exists');
+  const browser =
+     await puppeteer.launch({
+     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'], headless: true });
+    BrowserEP.getInstance(browser.wsEndpoint());
+    console.log(`Browser running on: ${BrowserEP.getInstance()}`);
+    return browser;
 }
 
 function timeOut() {
@@ -79,17 +94,23 @@ module.exports = async function login(req, res) {
     const navResponse = page.waitForNavigation(['networkidle0']);
     page.click(LOGIN_BUTTON_SELECTOR);
     await navResponse;
-    await timeOut();
 
     const docOne = await page.content();
     fs.writeFileSync('./public/first.html', docOne);
 
     const button1 = await page.$(CONTINUE_BUTTON);
 
+    await page.screenshot({path: './public/images/hej1.png'});
+
     const navResponse2 = page.waitForNavigation(['networkidle0']);
+    console.log('HEEJ');
     page.evaluate(e => e.click(), button1);
     await navResponse2;
-    await timeOut();
+    console.log('HEEJ2');
+
+
+    await page.screenshot({path: './public/images/hej3.png'});
+
 
     const docTwo = await page.content();
     fs.writeFileSync('./public/second.html', docTwo);
@@ -109,7 +130,6 @@ module.exports = async function login(req, res) {
     });
 
     await page.screenshot({path: './public/images/chrome.png'});
-
 
     const button = await page.$(CONFIRM_BUTTOM_SELECTOR);
     console.log('button: ', button);
