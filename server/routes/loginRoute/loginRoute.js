@@ -91,17 +91,21 @@ module.exports = async function login(req, res) {
       const hasBirthdayConfirmOption = await page.evaluate((sel) => {
         return !!document.querySelector(sel);
       }, CONFIRM_RADIO_BUTTON_BIRTHDAY);
-
+      
+      console.log('hasBirthdayConfirmOption: ', hasBirthdayConfirmOption);
       const hasDeviceConfirmOption = await page.evaluate((sel) => {
         return !!document.querySelector(sel);
       }, CONFIRM_RADIO_BUTTON_DEVICE);
-
+      
+      console.log('hasDeviceConfirmOption: ', hasDeviceConfirmOption);
       const CONFIRM_RADIO_BUTTON = 
         hasDeviceConfirmOption ? 
         CONFIRM_RADIO_BUTTON_DEVICE :
         CONFIRM_RADIO_BUTTON_BIRTHDAY;
 
       page.click(CONFIRM_RADIO_BUTTON);
+      await timeOut();
+      page.click(CONTINUE_BUTTON);
       await timeOut();
 
       const docThree = await page.content();
@@ -110,7 +114,6 @@ module.exports = async function login(req, res) {
       page.click(CONTINUE_BUTTON);
       await timeOut();
 
-      await page.screenshot({path: './public/images/hej4.png'});
       const docFour = await page.content();
       fs.writeFileSync('./public/fourth.html', docFour);
 
