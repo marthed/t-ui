@@ -17,6 +17,8 @@ class App extends React.Component {
       isLoggedIn: false,
       accessToken: null,
       isLoggingIn: false,
+      confirmType: '',
+      confirmValue: '',
     }
   }
 
@@ -31,10 +33,16 @@ class App extends React.Component {
           password
         }
       });
-      console.log('res: ', res);
-      this.setState({ isLoggedIn: true, isLoggingIn: false, accessToken: res.data.tinderToken});
-      sessionStorage.setItem('loginTime', moment().valueOf());
-      sessionStorage.setItem('accessToken', res.data.tinderToken);
+
+      if (res.data.confirmType === 'birthday') {
+        this.setState({ confirmType: 'birthday', isLoggingIn: false });
+      }
+      else {
+        console.log('res: ', res);
+        this.setState({ isLoggedIn: true, isLoggingIn: false, accessToken: res.data.tinderToken});
+        sessionStorage.setItem('loginTime', moment().valueOf());
+        sessionStorage.setItem('accessToken', res.data.tinderToken);
+      }
     } 
     catch (error) {
       console.log(error.message);
@@ -69,12 +77,45 @@ class App extends React.Component {
     }
   }
 
+  confirmLogin = (date) => async () => {
+    this.setState({ isLoggingIn: true});
+    try {
+     const res = await axios.request({
+        url: '/login/confirm',
+        method: 'POST',
+        data: {
+          date
+        }
+      });
+      console.log('Confirm Login');
+      console.log(res);
+
+    } 
+    catch (error) {
+      console.log(error.message);
+      this.setState({isLoggedIn: false, accessToken: null, isLoggingIn: false});
+    }
+  }
+
+  renderConfirmLogin = () => {
+    const { confirmType, confirmValue, isLoggingIn } = this.state;
+    console.log('confirmValue: ', confirmValue);
+
+    return (
+      <div className="confirmLogin">
+        <label>Ange ditt födelsedatum</label>
+        <input type="date" name="bday" onChange={(date) => this.setState({confirmValue: date})} />
+        <button onClick={this.confirmLogin(confirmValue)} disabled={isLoggingIn}>Fortsätt</button>
+      </div>
+      )
+  }
+
   componentWillMount() {
     this.checkLoginStatus();
   }
 
   render () {
-    const { isLoggedIn, isLoggingIn, accessToken } = this.state;
+    const { isLoggedIn, isLoggingIn, accessToken, confirmType } = this.state;
     return (
       <div className="app-container">
         <div className="main-title">T-UI</div>
@@ -83,7 +124,9 @@ class App extends React.Component {
             <div>
             <div className="button-container">
               <Login onConfirm={this.login} isLoggingIn={isLoggingIn} />
+              {confirmType && this.renderConfirmLogin()}
             </div>
+
             {this.renderDebugImages()}
             </div>}
         </div>
