@@ -51,6 +51,8 @@ async function tinderLogin(accessToken, userId) {
   return token;
 };
 
+
+
 module.exports = async function login(req, res) {
   try {
     const browser = await getBrowser();
@@ -70,8 +72,6 @@ module.exports = async function login(req, res) {
     page.click(LOGIN_BUTTON_SELECTOR);
     await navResponse;
 
-    await page.screenshot({path: './public/images/hej1.png'});
-
     const docOne = await page.content();
     fs.writeFileSync('./public/first.html', docOne);
 
@@ -81,20 +81,27 @@ module.exports = async function login(req, res) {
     console.log('isAskingForIdentity: ', isAskingForIdentity);
 
     if (isAskingForIdentity) {
-      const button1 = await page.$(CONTINUE_BUTTON);
-
-      await page.screenshot({path: './public/images/hej1.png'});
-
       page.click(CONTINUE_BUTTON);
       await timeOut();
-      await page.screenshot({path: './public/images/hej2.png'});
 
-      const docTwo = await page.content();
-      fs.writeFileSync('./public/second.html', docTwo);
+      const identityPage1 = await page.content();
+      fs.writeFileSync('./public/second.html', identityPage1);
+
+      const hasBirthdayConfirmOption = await page.evaluate((sel) => {
+        return !!document.querySelector(sel);
+      }, CONFIRM_RADIO_BUTTON_BIRTHDAY);
+
+      const hasDeviceConfirmOption = await page.evaluate((sel) => {
+        return !!document.querySelector(sel);
+      }, CONFIRM_RADIO_BUTTON_DEVICE);
+
+      const CONFIRM_RADIO_BUTTON = 
+        hasDeviceConfirmOption ? 
+        CONFIRM_RADIO_BUTTON_DEVICE :
+        CONFIRM_RADIO_BUTTON_BIRTHDAY;
 
       page.click(CONFIRM_RADIO_BUTTON);
       await timeOut();
-      await page.screenshot({path: './public/images/hej3.png'});
 
       const docThree = await page.content();
       fs.writeFileSync('./public/third.html', docThree);
