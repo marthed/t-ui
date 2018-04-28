@@ -88,23 +88,12 @@ module.exports = async function login(req, res) {
       const identityPage1 = await page.content();
       fs.writeFileSync('./public/second.html', identityPage1);
 
-      const hasBirthdayConfirmOption = await page.evaluate((sel) => {
-        return !!document.querySelector(sel);
-      }, CONFIRM_RADIO_BUTTON_BIRTHDAY);
-      
-      console.log('hasBirthdayConfirmOption: ', hasBirthdayConfirmOption);
-      const hasDeviceConfirmOption = await page.evaluate((sel) => {
-        return !!document.querySelector(sel);
-      }, CONFIRM_RADIO_BUTTON_DEVICE);
-      
-      console.log('hasDeviceConfirmOption: ', hasDeviceConfirmOption);
-      const CONFIRM_RADIO_BUTTON = 
-        hasDeviceConfirmOption ? 
-        CONFIRM_RADIO_BUTTON_DEVICE :
-        CONFIRM_RADIO_BUTTON_BIRTHDAY;
+      const radioButtons = await page.$$('t[type=radio]');
+      console.log('radioButtons: ', radioButtons);
 
-      page.click(CONFIRM_RADIO_BUTTON);
+      await radioButtons[0].click();
       await timeOut();
+      
       page.click(CONTINUE_BUTTON);
       await timeOut();
 
