@@ -88,12 +88,12 @@ module.exports = async function login(req, res) {
       const identityPage1 = await page.content();
       fs.writeFileSync('./public/second.html', identityPage1);
 
-      const radioButtons = await page.$$('t[type=radio]');
+      const radioButtons = await page.$$('input[type=radio]');
       console.log('radioButtons: ', radioButtons);
 
       await radioButtons[0].click();
       await timeOut();
-      
+
       page.click(CONTINUE_BUTTON);
       await timeOut();
 
