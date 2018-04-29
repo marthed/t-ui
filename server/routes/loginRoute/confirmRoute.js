@@ -77,8 +77,8 @@ module.exports = async function confirmLogin(res, res) {
     await timeOut();
     await page.close();
 
-    const pages = await browser.pages();
-    if (!pages) browser.disconnect();
+    const pages2 = await browser.pages();
+    if (!pages2) browser.disconnect();
 
     throw new Error('TimeOut: Did not receive confirm response');
 
