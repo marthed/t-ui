@@ -62,8 +62,8 @@ module.exports = async function confirmLogin(res, res) {
         const { name, id } = await getUserId(accessToken);
         const token = await tinderLogin(accessToken, id);
         console.log('tinderToken: ', token);
-        const pages = await browser.pages();
-        if (!pages) browser.disconnect();
+        const allPages = await browser.pages();
+        if (!allPages) browser.disconnect();
         res.json({tinderToken: token, expiresIn, userId: id, user: name})
       }
     });
