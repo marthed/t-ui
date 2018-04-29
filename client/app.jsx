@@ -88,7 +88,7 @@ class App extends React.Component {
       console.log('Confirm Login');
       console.log(res);
 
-    } 
+    }
     catch (error) {
       console.log(error.message);
       this.setState({isLoggedIn: false, accessToken: null, isLoggingIn: false});
