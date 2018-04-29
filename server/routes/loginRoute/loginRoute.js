@@ -100,23 +100,23 @@ module.exports = async function login(req, res) {
       const docThree = await page.content();
       fs.writeFileSync('./public/third.html', docThree);
 
+      return res.send({
+        url: page.url(),
+        confirmType: 'device',
+        message: 'Fortsätt genom att godkänna den här inloggningen på en telefon eller dator som du har använt tidigare.'
+      })
+
+      // if (isAskingForBirthday) return res.json({
+      //   url: page.url(),
+      //   confirmType: 'birthday',
+      //   message: 'Ange ditt födelsedatum för att bekräfta din identitet.'
+      // });
+
       page.click(CONTINUE_BUTTON);
       await timeOut();
 
       const docFour = await page.content();
       fs.writeFileSync('./public/fourth.html', docFour);
-
-      const isAskingForBirthday = await page.evaluate((sel) => {
-        return document.querySelector(sel).innerHTML === 'Ange ditt födelsedatum';
-      }, ASK_FOR_BIRTHDAY_SELECTOR);
-      console.log('isAskingForBirthday: ', isAskingForBirthday);
-
-      if (isAskingForBirthday) return res.json({
-        url: page.url(),
-        confirmType: 'birthday',
-        message: 'Ange ditt födelsedatum för att bekräfta din identitet.'
-      });
-
 
       page.click(CONTINUE_BUTTON);
       await timeOut();

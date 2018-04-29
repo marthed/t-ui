@@ -9,13 +9,15 @@ const { getBrowser } = require('./browser');
 module.exports = async function confirmLogin(res, res) {
 
   try {
+    
     const browser = await getBrowser();
     const pages = await browser.pages();
     console.log('pages: ', pages);
     if (pages.length > 0) {
       const page = pages[0];
-      await page.screenshot({path: './public/images/birthday.png'});
+      await page.screenshot({path: './public/images/confirm.png'});
     }
+    console.log('Hej: ', res.body.data);
     // Connecta till browser
     // Var på samma sida som innan
     // Skriv in födelsedagsdatumetet och confirma

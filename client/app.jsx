@@ -37,6 +37,9 @@ class App extends React.Component {
       if (res.data.confirmType === 'birthday') {
         this.setState({ confirmType: 'birthday', isLoggingIn: false });
       }
+      else if (res.data.confirmType === 'device') {
+        this.setState({ confirmType: 'device', isLoggingIn: false});
+      }
       else {
         console.log('res: ', res);
         this.setState({ isLoggedIn: true, isLoggingIn: false, accessToken: res.data.tinderToken});
@@ -48,14 +51,6 @@ class App extends React.Component {
       console.log(error.message);
       this.setState({isLoggedIn: false, accessToken: null, isLoggingIn: false});
     }
-  }
-
-  renderDebugImages = () => {
-    return (
-      <div className="debug-image-container">
-        <img src="https://t-ui.herokuapp.com/images/chrome.png"/>
-      </div>
-    )
   }
 
   checkLoginStatus = () => {
@@ -77,14 +72,17 @@ class App extends React.Component {
     }
   }
 
-  confirmLogin = (date) => async () => {
+  confirmLogin = ({type, value}) => async () => {
+    console.log('type: ', type);
+    console.log('value: ', value);
     this.setState({ isLoggingIn: true});
     try {
      const res = await axios.request({
         url: '/login/confirm',
         method: 'POST',
         data: {
-          date
+          type,
+          value
         }
       });
       console.log('Confirm Login');
@@ -99,13 +97,19 @@ class App extends React.Component {
 
   renderConfirmLogin = () => {
     const { confirmType, confirmValue, isLoggingIn } = this.state;
-    console.log('confirmValue: ', confirmValue);
-
+    if (confirmType === 'device') {
+      return (
+      <div className="confirmLogin">
+        <label>Logga in på en enhet du använt tidigare</label>
+        <button onClick={this.confirmLogin({type: confirmType})} disabled={isLoggingIn}>Fortsätt</button>
+      </div>
+      )
+    };
     return (
       <div className="confirmLogin">
         <label>Ange ditt födelsedatum</label>
         <input type="date" name="bday" onChange={(date) => this.setState({confirmValue: date})} />
-        <button onClick={this.confirmLogin(confirmValue)} disabled={isLoggingIn}>Fortsätt</button>
+        <button onClick={this.confirmLogin({type: confirmType, value: confirmValue})} disabled={isLoggingIn}>Fortsätt</button>
       </div>
       )
   }
@@ -126,8 +130,6 @@ class App extends React.Component {
               <Login onConfirm={this.login} isLoggingIn={isLoggingIn} />
               {confirmType && this.renderConfirmLogin()}
             </div>
-
-            {this.renderDebugImages()}
             </div>}
         </div>
       )
