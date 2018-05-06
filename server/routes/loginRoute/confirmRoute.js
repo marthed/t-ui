@@ -62,8 +62,9 @@ module.exports = async function confirmLogin(res, res) {
         const { name, id } = await getUserId(accessToken);
         const token = await tinderLogin(accessToken, id);
         console.log('tinderToken: ', token);
-        const allPages = await browser.pages();
-        if (!allPages) browser.disconnect();
+        await page.close();
+        const remainingPages = await browser.pages();
+        if (!remainingPages) browser.disconnect();
         res.json({tinderToken: token, expiresIn, userId: id, user: name})
       }
     });
@@ -77,8 +78,7 @@ module.exports = async function confirmLogin(res, res) {
     await timeOut();
     await page.close();
 
-    const pages2 = await browser.pages();
-    if (!pages2) browser.disconnect();
+    if (!pages) browser.disconnect();
 
     throw new Error('TimeOut: Did not receive confirm response');
 

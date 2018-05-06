@@ -130,6 +130,8 @@ module.exports = async function login(req, res) {
     
     return res.sendStatus(200);
 
+    const pages = await browser.pages();
+
     page.on('response', async response => {
       if (response.url().startsWith(CONFIRM_URL)) {
         const body = await response.text();
@@ -137,7 +139,7 @@ module.exports = async function login(req, res) {
         const { name, id } = await getUserId(accessToken);
         const token = await tinderLogin(accessToken, id);
         console.log('tinderToken: ', token);
-        const pages = await browser.pages();
+        await page.close();
         if (!pages) browser.disconnect();
         res.json({tinderToken: token, expiresIn, userId: id, user: name})
       }
@@ -152,7 +154,6 @@ module.exports = async function login(req, res) {
     await timeOut();
     await page.close();
 
-    const pages = await browser.pages();
     if (!pages) browser.disconnect();
 
     throw new Error('TimeOut: Did not receive confirm response');
