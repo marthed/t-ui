@@ -57,6 +57,7 @@ module.exports = async function confirmLogin(req, res) {
 
 
     page.on('response', async response => {
+      console.log('response: ', response.url());
       if (response.url().startsWith(CONFIRM_URL)) {
         const body = await response.text();
         const { accessToken, expiresIn } = extractTokenData(body);
@@ -82,6 +83,7 @@ module.exports = async function confirmLogin(req, res) {
     await timeOut();
     await page.close();
 
+    const browser = getBrowser();
     const remainingPages = await browser.pages();
     if (!pages) browser.disconnect();
 
