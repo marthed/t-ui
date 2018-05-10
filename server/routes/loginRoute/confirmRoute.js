@@ -51,8 +51,10 @@ module.exports = async function confirmLogin(res, res) {
     let page;
     if (pages.length > 0) {
       page = pages[0];
-      await page.screenshot({path: './public/images/confirm.png'});
-    }
+      await page.bringToFront();
+      const docFour = await page.content();
+      fs.writeFileSync('./public/fourth.html', docFour);
+      }
     console.log('Hej: ', res.data);
 
     page.on('response', async response => {
@@ -72,8 +74,8 @@ module.exports = async function confirmLogin(res, res) {
     page.click(CONTINUE_BUTTON);
     await timeOut();
 
-    const docFour = await page.content();
-    fs.writeFileSync('./public/fourth.html', docFour);
+    const docFive = await page.content();
+    fs.writeFileSync('./public/fourth.html', docFive);
 
     await timeOut();
     await page.close();
