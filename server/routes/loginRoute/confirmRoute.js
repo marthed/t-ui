@@ -7,6 +7,7 @@ const { getBrowser, getPage } = require('./browser');
 const {
   CONTINUE_BUTTON,
   CONFIRM_URL,
+  CONFIRM_BUTTOM_SELECTOR,
 } = require('./loginConstants');
 
 function timeOut() {
