@@ -67,17 +67,23 @@ module.exports = async function confirmLogin(req, res) {
       }
     });
 
-    page.click(CONTINUE_BUTTON);
+    await timeOut();
+
+    const button = await page.$(CONFIRM_BUTTOM_SELECTOR);
+    page.evaluate(e => e.click(), button);
+    await timeOut();
+
+    //page.click(CONTINUE_BUTTON);
     await timeOut();
 
     const docFive = await page.content();
     fs.writeFileSync('./public/fifth.html', docFive);
 
-    page.click(CONTINUE_BUTTON);
-    await timeOut();
+    // page.click(CONTINUE_BUTTON);
+    // await timeOut();
 
-    const docSix = await page.content();
-    fs.writeFileSync('./public/sixth.html', docSix);
+    // const docSix = await page.content();
+    // fs.writeFileSync('./public/sixth.html', docSix);
 
     await timeOut();
     await page.close();
