@@ -47,7 +47,7 @@ module.exports = async function confirmLogin(res, res) {
     
     const browser = await getBrowser();
     const pages = await browser.pages();
-    console.log('pages: ', pages);
+    console.log('pages: ', pages.length);
     let page;
     if (pages.length > 0) {
       page = pages[0];
