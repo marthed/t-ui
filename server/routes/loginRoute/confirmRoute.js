@@ -50,7 +50,7 @@ module.exports = async function confirmLogin(res, res) {
     console.log('pages: ', pages.length);
     let page;
     if (pages.length > 0) {
-      page = pages[0];
+      page = pages[1];
       await page.bringToFront();
       const docFour = await page.content();
       fs.writeFileSync('./public/fourth.html', docFour);
