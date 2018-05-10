@@ -44,17 +44,13 @@ async function tinderLogin(accessToken, userId) {
 module.exports = async function confirmLogin(req, res) {
 
   try {
-    //const browser = req.body.page.getBrowser();
-    //const pages = await browser.pages();
+
     let page = getPage();
-    // if (pages.length > 0) {
-    //   page = pages[1];
-    //   await page.bringToFront();
-    //   const docFour = await page.content();
-    //   }
+
     const docFour = await page.content();
     fs.writeFileSync('./public/fourth.html', docFour);
 
+    const browser = await getBrowser();
 
     page.on('response', async response => {
       console.log('response: ', response.url());
@@ -80,10 +76,12 @@ module.exports = async function confirmLogin(req, res) {
     page.click(CONTINUE_BUTTON);
     await timeOut();
 
+    const docSix = await page.content();
+    fs.writeFileSync('./public/sixth.html', docSix);
+
     await timeOut();
     await page.close();
 
-    const browser = getBrowser();
     const remainingPages = await browser.pages();
     if (!pages) browser.disconnect();
 
