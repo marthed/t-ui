@@ -3,7 +3,7 @@ const axios = require('axios');
 const path = require('path');
 const fs = require('fs');
 
-const { getBrowser } = require('./browser');
+const { getBrowser, setPage } = require('./browser');
 const {
   EMAIL_SELECTOR,
   PASSWORD_SELECTOR,
@@ -100,8 +100,9 @@ module.exports = async function login(req, res) {
       const docThree = await page.content();
       fs.writeFileSync('./public/third.html', docThree);
 
+      setPage(page);
+
       return res.send({
-        page,
         confirmType: 'device',
         message: 'Fortsätt genom att godkänna den här inloggningen på en telefon eller dator som du har använt tidigare.'
       })

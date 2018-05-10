@@ -3,7 +3,7 @@ const axios = require('axios');
 const path = require('path');
 const fs = require('fs');
 
-const { getBrowser } = require('./browser');
+const { getBrowser, getPage } = require('./browser');
 const {
   CONTINUE_BUTTON,
   CONFIRM_URL,
@@ -44,15 +44,15 @@ async function tinderLogin(accessToken, userId) {
 module.exports = async function confirmLogin(req, res) {
 
   try {
-    const browser = req.body.page.getBrowser();
-    const pages = await browser.pages();
-    console.log('pages: ', pages.length);
-    let page = req.body.page;
+    //const browser = req.body.page.getBrowser();
+    //const pages = await browser.pages();
+    let page = getPage();
     // if (pages.length > 0) {
     //   page = pages[1];
     //   await page.bringToFront();
     //   const docFour = await page.content();
     //   }
+    const docFour = await page.content();
     fs.writeFileSync('./public/fourth.html', docFour);
 
 

@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 
+let page;
 
 var BrowserEP = (function () {
   var instance;
@@ -33,6 +34,14 @@ getBrowser = async () => {
     return browser;
 }
 
+setPage = (p) => {
+  page = p; 
+}
+
+getPage = () => page;
+
 module.exports = {
-  getBrowser
+  getBrowser,
+  setPage,
+  getPage
 };
