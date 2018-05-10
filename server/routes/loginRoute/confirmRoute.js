@@ -41,21 +41,20 @@ async function tinderLogin(accessToken, userId) {
   return token;
 };
 
-module.exports = async function confirmLogin(res, res) {
+module.exports = async function confirmLogin(req, res) {
 
   try {
-    
-    const browser = await getBrowser();
+    const browser = req.body.page.getBrowser();
     const pages = await browser.pages();
     console.log('pages: ', pages.length);
-    let page;
-    if (pages.length > 0) {
-      page = pages[1];
-      await page.bringToFront();
-      const docFour = await page.content();
-      fs.writeFileSync('./public/fourth.html', docFour);
-      }
-    console.log('Hej: ', res.data);
+    let page = req.body.page;
+    // if (pages.length > 0) {
+    //   page = pages[1];
+    //   await page.bringToFront();
+    //   const docFour = await page.content();
+    //   }
+    fs.writeFileSync('./public/fourth.html', docFour);
+
 
     page.on('response', async response => {
       if (response.url().startsWith(CONFIRM_URL)) {

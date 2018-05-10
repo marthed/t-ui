@@ -38,7 +38,7 @@ class App extends React.Component {
         this.setState({ confirmType: 'birthday', isLoggingIn: false });
       }
       else if (res.data.confirmType === 'device') {
-        this.setState({ confirmType: 'device', isLoggingIn: false});
+        this.setState({ confirmType: 'device', isLoggingIn: false, page: res.data.page });
       }
       else {
         console.log('res: ', res);
@@ -72,7 +72,7 @@ class App extends React.Component {
     }
   }
 
-  confirmLogin = ({type, value}) => async () => {
+  confirmLogin = ({type, value, page }) => async () => {
     console.log('type: ', type);
     console.log('value: ', value);
     this.setState({ isLoggingIn: true});
@@ -82,7 +82,8 @@ class App extends React.Component {
         method: 'POST',
         data: {
           type,
-          value
+          value,
+          page
         }
       });
       console.log('Confirm Login');
@@ -96,7 +97,7 @@ class App extends React.Component {
   }
 
   renderConfirmLogin = () => {
-    const { confirmType, confirmValue, isLoggingIn } = this.state;
+    const { confirmType, confirmValue, isLoggingIn, page } = this.state;
     if (confirmType === 'device') {
       return (
       <div className="confirmLogin">
@@ -109,7 +110,7 @@ class App extends React.Component {
       <div className="confirmLogin">
         <label>Ange ditt födelsedatum</label>
         <input type="date" name="bday" onChange={(date) => this.setState({confirmValue: date})} />
-        <button onClick={this.confirmLogin({type: confirmType, value: confirmValue})} disabled={isLoggingIn}>Fortsätt</button>
+        <button onClick={this.confirmLogin({type: confirmType, value: confirmValue, page})} disabled={isLoggingIn}>Fortsätt</button>
       </div>
       )
   }

@@ -91,7 +91,7 @@ module.exports = async function login(req, res) {
       const radioButtons = await page.$$('input[type=radio]');
       console.log('radioButtons: ', radioButtons);
 
-      await radioButtons[0].click();
+      await radioButtons[1].click();
       await timeOut();
 
       page.click(CONTINUE_BUTTON);
@@ -101,7 +101,7 @@ module.exports = async function login(req, res) {
       fs.writeFileSync('./public/third.html', docThree);
 
       return res.send({
-        url: page.url(),
+        page,
         confirmType: 'device',
         message: 'Fortsätt genom att godkänna den här inloggningen på en telefon eller dator som du har använt tidigare.'
       })
