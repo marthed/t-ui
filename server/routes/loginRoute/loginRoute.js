@@ -89,7 +89,6 @@ module.exports = async function login(req, res) {
       fs.writeFileSync('./public/second.html', identityPage1);
 
       const radioButtons = await page.$$('input[type=radio]');
-      console.log('radioButtons: ', radioButtons);
 
       await radioButtons[1].click();
       await timeOut();
@@ -149,7 +148,6 @@ module.exports = async function login(req, res) {
     await page.screenshot({path: './public/images/chrome.png'});
 
     const button = await page.$(CONFIRM_BUTTOM_SELECTOR);
-    console.log('button: ', button);
 
     page.evaluate(e => e.click(), button);
     await timeOut();

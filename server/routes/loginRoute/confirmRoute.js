@@ -7,6 +7,7 @@ const { getBrowser, getPage } = require('./browser');
 const {
   CONTINUE_BUTTON,
   CONFIRM_URL,
+  CONFIRM_URL_2,
   CONFIRM_BUTTOM_SELECTOR,
 } = require('./loginConstants');
 
@@ -55,7 +56,7 @@ module.exports = async function confirmLogin(req, res) {
 
     page.on('response', async response => {
       console.log('response: ', response.url());
-      if (response.url().startsWith(CONFIRM_URL)) {
+      if (response.url().startsWith(CONFIRM_URL) || response.url().startsWith(CONFIRM_URL_2)) {
         const body = await response.text();
         const { accessToken, expiresIn } = extractTokenData(body);
         const { name, id } = await getUserId(accessToken);
