@@ -8,7 +8,7 @@ const {
   CONTINUE_BUTTON,
   CONFIRM_URL,
   CONFIRM_URL_2,
-  CONFIRM_BUTTOM_SELECTOR,
+  CONFIRM_BUTTOM_SELECTOR_2,
 } = require('./loginConstants');
 
 function timeOut() {
@@ -75,10 +75,14 @@ module.exports = async function confirmLogin(req, res) {
     const docFive = await page.content();
     fs.writeFileSync('./public/fifth.html', docFive);
 
-    const confirmButtons = await page.$$('button[type=submit]');
+    let confirmButton = await page.$$('button[name=__CONFIRM__]');
+    console.log('confirmButtons: ', confirmButton);
+    if (!confirmButton) {
+      confirmButton = await page.$(CONFIRM_BUTTOM_SELECTOR_2);
+    }
 
     const navResponse2 = page.waitForNavigation(['networkidle0']);
-    page.evaluate(e => e.click(), confirmButtons[1]);
+    page.evaluate(e => e.click(), confirmButton[0]);
     await navResponse2;
 
     const docSix = await page.content();
