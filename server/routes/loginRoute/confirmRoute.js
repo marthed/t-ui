@@ -48,6 +48,10 @@ module.exports = async function confirmLogin(req, res) {
   try {
 
     let page = getPage();
+    const browser = await getBrowser();
+    const docFour = await page.content();
+    fs.writeFileSync('./public/fourth.html', docFour);
+
 
     page.on('response', async response => {
       console.log('response: ', response.url());
@@ -63,29 +67,14 @@ module.exports = async function confirmLogin(req, res) {
       }
     });
 
-    const docFour = await page.content();
-    fs.writeFileSync('./public/fourth.html', docFour);
+    const button = await page.$(CONFIRM_BUTTOM_SELECTOR);
+    const navResponse = page.waitForNavigation(['networkidle0']);
+    page.evaluate(e => e.click(), button);
+    await navResponse;
 
-    const browser = await getBrowser();
-
-    await page.waitFor(10000);
-    console.log('Finished waiting');
-
-    // const button = await page.$(CONFIRM_BUTTOM_SELECTOR);
-    // page.evaluate(e => e.click(), button);
-    // await timeOut();
-
-    //page.click(CONTINUE_BUTTON);
-    //await timeOut();
 
     const docFive = await page.content();
     fs.writeFileSync('./public/fifth.html', docFive);
-
-    // page.click(CONTINUE_BUTTON);
-    // await timeOut();
-
-    // const docSix = await page.content();
-    // fs.writeFileSync('./public/sixth.html', docSix);
 
     await timeOut();
     await page.close();
