@@ -58,7 +58,6 @@ module.exports = async function confirmLogin(req, res) {
     await navResponse;
 
     page.on('response', async response => {
-      console.log('response: ', response.url());
       if (response.url().startsWith(CONFIRM_URL)) {
         console.log('Confirmed!');
         const body = await response.text();
@@ -76,7 +75,6 @@ module.exports = async function confirmLogin(req, res) {
     fs.writeFileSync('./public/fifth.html', docFive);
 
     let confirmButton = await page.$$('button[name=__CONFIRM__]');
-    console.log('confirmButtons: ', confirmButton);
     if (!confirmButton) {
       confirmButton = await page.$(CONFIRM_BUTTOM_SELECTOR_2);
     }
@@ -95,7 +93,6 @@ module.exports = async function confirmLogin(req, res) {
     browser.disconnect();
 
     throw new Error('TimeOut: Did not receive confirm response');
-
 
   } catch (error){
     console.log(error);
