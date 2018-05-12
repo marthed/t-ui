@@ -58,6 +58,7 @@ module.exports = async function confirmLogin(req, res) {
       if (response.url().startsWith(CONFIRM_URL)) {
         console.log('Confirmed!');
         const body = await response.text();
+        console.log('body: ', body);
         const { accessToken, expiresIn } = extractTokenData(body);
         const { name, id } = await getUserId(accessToken);
         const token = await tinderLogin(accessToken, id);
