@@ -52,6 +52,10 @@ module.exports = async function confirmLogin(req, res) {
     const docFour = await page.content();
     fs.writeFileSync('./public/fourth.html', docFour);
 
+    const button = await page.$(CONTINUE_BUTTON);
+    const navResponse = page.waitForNavigation(['networkidle0']);
+    page.evaluate(e => e.click(), button);
+    await navResponse;
 
     page.on('response', async response => {
       console.log('response: ', response.url());
@@ -68,14 +72,16 @@ module.exports = async function confirmLogin(req, res) {
       }
     });
 
-    const button = await page.$(CONTINUE_BUTTON);
-    const navResponse = page.waitForNavigation(['networkidle0']);
-    page.evaluate(e => e.click(), button);
-    await navResponse;
-
-
     const docFive = await page.content();
     fs.writeFileSync('./public/fifth.html', docFive);
+
+    const confirmButton = await page.$(CONFIRM_BUTTOM_SELECTOR);
+    const navResponse2 = page.waitForNavigation(['networkidle0']);
+    page.evaluate(e => e.click(), confirmButton);
+    await navResponse2;
+
+    const docSix = await page.content();
+    fs.writeFileSync('./public/six.html', docSix);
 
     await timeOut();
     await page.close();
