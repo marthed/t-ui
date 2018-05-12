@@ -75,9 +75,10 @@ module.exports = async function confirmLogin(req, res) {
     const docFive = await page.content();
     fs.writeFileSync('./public/fifth.html', docFive);
 
-    const confirmButton = await page.$(CONFIRM_BUTTOM_SELECTOR);
+    const confirmButtons = await page.$$('button[type=submit]');
+
     const navResponse2 = page.waitForNavigation(['networkidle0']);
-    page.evaluate(e => e.click(), confirmButton);
+    page.evaluate(e => e.click(), confirmButtons[1]);
     await navResponse2;
 
     const docSix = await page.content();
