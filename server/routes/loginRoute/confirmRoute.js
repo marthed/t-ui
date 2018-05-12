@@ -67,7 +67,7 @@ module.exports = async function confirmLogin(req, res) {
       }
     });
 
-    const button = await page.$(CONFIRM_BUTTOM_SELECTOR);
+    const button = await page.$(CONTINUE_BUTTON);
     const navResponse = page.waitForNavigation(['networkidle0']);
     page.evaluate(e => e.click(), button);
     await navResponse;
