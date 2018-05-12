@@ -49,14 +49,10 @@ module.exports = async function confirmLogin(req, res) {
 
     let page = getPage();
 
-    const docFour = await page.content();
-    fs.writeFileSync('./public/fourth.html', docFour);
-
-    const browser = await getBrowser();
-
     page.on('response', async response => {
       console.log('response: ', response.url());
-      if (response.url().startsWith(CONFIRM_URL) || response.url().startsWith(CONFIRM_URL_2)) {
+      if (response.url().startsWith(CONFIRM_URL_2)) {
+        console.log('Confirmed!');
         const body = await response.text();
         const { accessToken, expiresIn } = extractTokenData(body);
         const { name, id } = await getUserId(accessToken);
@@ -67,14 +63,20 @@ module.exports = async function confirmLogin(req, res) {
       }
     });
 
-    await page.waitFor(10000);
+    const docFour = await page.content();
+    fs.writeFileSync('./public/fourth.html', docFour);
 
-    const button = await page.$(CONFIRM_BUTTOM_SELECTOR);
-    page.evaluate(e => e.click(), button);
-    await timeOut();
+    const browser = await getBrowser();
+
+    await page.waitFor(10000);
+    console.log('Finished waiting');
+
+    // const button = await page.$(CONFIRM_BUTTOM_SELECTOR);
+    // page.evaluate(e => e.click(), button);
+    // await timeOut();
 
     //page.click(CONTINUE_BUTTON);
-    await timeOut();
+    //await timeOut();
 
     const docFive = await page.content();
     fs.writeFileSync('./public/fifth.html', docFive);
