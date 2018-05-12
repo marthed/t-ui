@@ -55,7 +55,7 @@ module.exports = async function confirmLogin(req, res) {
 
     page.on('response', async response => {
       console.log('response: ', response.url());
-      if (response.url().startsWith(CONFIRM_URL_2)) {
+      if (response.url().startsWith(CONFIRM_URL)) {
         console.log('Confirmed!');
         const body = await response.text();
         const { accessToken, expiresIn } = extractTokenData(body);
