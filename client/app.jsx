@@ -41,7 +41,6 @@ class App extends React.Component {
         this.setState({ confirmType: 'device', isLoggingIn: false });
       }
       else {
-        console.log('res: ', res);
         this.setState({ isLoggedIn: true, isLoggingIn: false, accessToken: res.data.tinderToken});
         sessionStorage.setItem('loginTime', moment().valueOf());
         sessionStorage.setItem('accessToken', res.data.tinderToken);
@@ -87,7 +86,9 @@ class App extends React.Component {
       });
       console.log('Confirm Login');
       console.log(res);
-      
+      this.setState({ isLoggedIn: true, isLoggingIn: false, accessToken: res.data.tinderToken});
+      sessionStorage.setItem('loginTime', moment().valueOf());
+      sessionStorage.setItem('accessToken', res.data.tinderToken);
 
     }
     catch (error) {

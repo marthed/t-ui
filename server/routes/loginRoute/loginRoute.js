@@ -86,7 +86,7 @@ module.exports = async function login(req, res) {
       await timeOut();
 
       const identityPage1 = await page.content();
-      fs.writeFileSync('./public/second.html', identityPage1);
+      fs.writeFileSync('./public/identity1.html', identityPage1);
 
       const radioButtons = await page.$$('input[type=radio]');
 
@@ -96,42 +96,17 @@ module.exports = async function login(req, res) {
       page.click(CONTINUE_BUTTON);
       await timeOut();
 
-      const docThree = await page.content();
-      fs.writeFileSync('./public/third.html', docThree);
+      const identityPage2 = await page.content();
+      fs.writeFileSync('./public/identity2.html', identityPage2);
 
       setPage(page);
 
       return res.send({
         confirmType: 'device',
         message: 'Fortsätt genom att godkänna den här inloggningen på en telefon eller dator som du har använt tidigare.'
-      })
-
-      // if (isAskingForBirthday) return res.json({
-      //   url: page.url(),
-      //   confirmType: 'birthday',
-      //   message: 'Ange ditt födelsedatum för att bekräfta din identitet.'
-      // });
-
-      page.click(CONTINUE_BUTTON);
-      await timeOut();
-
-      const docFour = await page.content();
-      fs.writeFileSync('./public/fourth.html', docFour);
-
-      page.click(CONTINUE_BUTTON);
-      await timeOut();
-      
-      await page.screenshot({path: './public/images/hej5.png'});
-      const docFifth = await page.content();
-      fs.writeFileSync('./public/fifth.html', docFifth);
-
-      return res.sendStatus(200);
+      });
     }
-    
-    return res.sendStatus(200);
-
-    const pages = await browser.pages();
-
+ 
     page.on('response', async response => {
       if (response.url().startsWith(CONFIRM_URL)) {
         const body = await response.text();
@@ -145,15 +120,13 @@ module.exports = async function login(req, res) {
       }
     });
 
-    await page.screenshot({path: './public/images/chrome.png'});
+    const confirmButton = await page.$(CONFIRM_BUTTOM_SELECTOR);
 
-    const button = await page.$(CONFIRM_BUTTOM_SELECTOR);
-
-    page.evaluate(e => e.click(), button);
+    page.evaluate(e => e.click(), confirmButton);
     await timeOut();
     await page.close();
 
-    if (!pages) browser.disconnect();
+    browser.disconnect();
 
     throw new Error('TimeOut: Did not receive confirm response');
     // Close brower in SetTimeOut

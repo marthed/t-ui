@@ -5,8 +5,8 @@ const querystring = require('querystring');
 
 const loginRoute = require('./loginRoute/loginRoute');
 const confirmLogin = require('./loginRoute/confirmRoute');
-const getAllMatches = require('./matchesRoute').getAllMatches;
-const getMatchesFromPage = require('./matchesRoute').getMatchesFromPage;
+const getAllMatches = require('./matchesRoute/matchesRoute').getAllMatches;
+const getMatchesFromPage = require('./matchesRoute/matchesRoute').getMatchesFromPage;
 
 
 router.get('/', function(req, res) { res.send('index.html') });
