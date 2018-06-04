@@ -24,17 +24,18 @@ export default class MainContainer extends React.Component {
   
   getMatches = async () => {
     console.log('Getting matches...');
-    const { accessToken } = this.props;
+    const { accessToken, userId } = this.props;
     const pageToken = sessionStorage.getItem('pageToken');
     this.setState({isFetching: true});
     
     try {
       const res = await axios.request({
-        url: '/matchesFromPage',
+        url: '/matches',
         method: 'POST',
         data: {
           accessToken,
-          pageToken
+          pageToken,
+          userId,
         }
       });
       const { matches, next_page_token } = res.data;

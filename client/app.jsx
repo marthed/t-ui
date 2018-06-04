@@ -41,14 +41,21 @@ class App extends React.Component {
         this.setState({ confirmType: 'device', isLoggingIn: false });
       }
       else {
-        this.setState({ isLoggedIn: true, isLoggingIn: false, accessToken: res.data.tinderToken});
+        this.setState(
+          {
+            isLoggedIn: true,
+            isLoggingIn: false,
+            userId: res.data.userId,
+            accessToken: res.data.tinderToken
+          });
         sessionStorage.setItem('loginTime', moment().valueOf());
         sessionStorage.setItem('accessToken', res.data.tinderToken);
+        sessionStorage.setItem('userId', res.data.userId);
       }
     } 
     catch (error) {
       console.log(error.message);
-      this.setState({isLoggedIn: false, accessToken: null, isLoggingIn: false});
+      this.setState({isLoggedIn: false, accessToken: null, isLoggingIn: false, userId: null});
     }
   }
 
@@ -121,12 +128,12 @@ class App extends React.Component {
   }
 
   render () {
-    const { isLoggedIn, isLoggingIn, accessToken, confirmType } = this.state;
+    const { isLoggedIn, isLoggingIn, accessToken, confirmType, userId } = this.state;
     return (
       <div className="app-container">
         <div className="main-title">T-UI</div>
           {isLoggedIn ?
-            <MainContainer accessToken={accessToken}/> :
+            <MainContainer accessToken={accessToken} userId={userId}/> :
             <div>
             <div className="button-container">
               <Login onConfirm={this.login} isLoggingIn={isLoggingIn} />

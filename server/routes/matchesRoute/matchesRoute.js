@@ -1,18 +1,24 @@
 const axios = require('axios');
 const querystring = require('querystring');
+const { storeMatchesFromTinder, getStoredMatches } = require('./matches.js');
 
-async function getAllMatches(req, res) {
+
+async function getAllMatchesFromTinder(req, res) {
   try {
-    console.log('Getting ALL matches with token: ', req.body.accessToken);
-    const matches = await getMatchesFromAllPages(req.body.accessToken, "first");
-    console.log('matches: ', matches);
-    res.json({matches});
+    const { userId, accessToken } = req.body;
+    const storedMatches = getStoredMatches(userId);
+    if (storedMatches) return res.json({ storedMatches });
+    
+    console.log('Getting ALL matches with token: ', accessToken);
+    const matches = await getMatchesFromAllPages(accessToken, "first");
+    await storeMatchesFromTinder(req.body.userId, matches);
+
+    res.json({ matches });
   }
   catch (error) {
     console.log(error);
     res.statusCode(500);
   }
-
 }
 
 async function tinderRequest(url, method, accessToken) {
@@ -32,12 +38,12 @@ async function tinderRequest(url, method, accessToken) {
 async function getMatchesFromAllPages(accessToken, pageToken, allMatches=[]){
   if (pageToken === undefined) return allMatches;
   const nextPageToken = (pageToken !== 'first') ? pageToken : null;
-  const { matches, next_page_token } = await getMatchesFromPage(accessToken, nextPageToken);
+  const { matches, next_page_token } = await getMatchesFromTinderPage(accessToken, nextPageToken);
   const aggregatedMatches = allMatches.concat(matches);
   return getMatchesFromAllPages(accessToken, next_page_token, aggregatedMatches);
 }
 
-async function getMatchesFromPage(accessToken, pageToken) {
+async function getMatchesFromTinderPage(accessToken, pageToken) {
   const query = querystring.stringify({ page_token: pageToken });
   
   const { data: { matches, next_page_token } } = await tinderRequest(`https://api.gotinder.com/v2/matches?${query}`, 'GET', accessToken);
@@ -65,6 +71,6 @@ const routeWrapper = (handler) => async (req, res) => {
 }
 
 module.exports = {
-  getMatchesFromPage: routeWrapper(getMatchesFromPage),
-  getAllMatches
+  getMatchesFromTinderPage: routeWrapper(getMatchesFromTinderPage),
+  getAllMatchesFromTinder
 }

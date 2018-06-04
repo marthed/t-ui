@@ -115,7 +115,7 @@ module.exports = async function login(req, res) {
         const token = await tinderLogin(accessToken, id);
         console.log('tinderToken: ', token);
         await page.close();
-        if (!pages) browser.disconnect();
+        browser.disconnect();
         res.json({tinderToken: token, expiresIn, userId: id, user: name})
       }
     });
@@ -124,11 +124,10 @@ module.exports = async function login(req, res) {
 
     page.evaluate(e => e.click(), confirmButton);
     await timeOut();
-    await page.close();
 
-    browser.disconnect();
+    //browser.disconnect();
 
-    throw new Error('TimeOut: Did not receive confirm response');
+    //throw new Error('TimeOut: Did not receive confirm response');
     // Close brower in SetTimeOut
     // Use promise canceller if connected to before timeout.
   }
