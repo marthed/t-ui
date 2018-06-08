@@ -10,10 +10,10 @@ export default class MatchBox extends React.Component {
 
   renderJobs = (jobs) => {
     if (!jobs || jobs.length === 0) return null;
-    return jobs.map((job) => {
+    return jobs.map((job, idx) => {
       const { title, company } = job;
       return (
-      <span key={company ? company.name : title.name}>
+      <span key={company ? company.name+idx : title.name+idx}>
         {title ? title.name : null}
         {company ? company.name : null}
       </span>)
@@ -22,10 +22,10 @@ export default class MatchBox extends React.Component {
 
   renderSchools = (schools) => {
     if (!schools || schools.length === 0) return null;
-    return schools.map((school) => {
+    return schools.map((school, idx) => {
       const { name } = school;
       return (
-      <span key={name}>
+      <span key={name+idx}>
         {name}
       </span>)
     });

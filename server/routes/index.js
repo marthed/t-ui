@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios');
-const querystring = require('querystring');
 
 const loginRoute = require('./loginRoute/loginRoute');
 const confirmLogin = require('./loginRoute/confirmRoute');

@@ -1,15 +1,19 @@
 const axios = require('axios');
 const querystring = require('querystring');
 const { storeMatchesFromTinder, getStoredMatches } = require('./matches.js');
+const filterMatches = require('./filterMatches.js');
 
 
 async function getAllMatchesFromTinder(req, res) {
   try {
-    const { userId, accessToken } = req.body;
-    const storedMatches = getStoredMatches(userId);
-    if (storedMatches) return res.json({ storedMatches });
-    
-    console.log('Getting ALL matches with token: ', accessToken);
+    const { userId, accessToken, filters } = req.body;
+    const storedMatches = getStoredMatches(undefined);
+    if (storedMatches) {
+      const filteredMatches = filterMatches(storedMatches, filter);
+      return res.json({ matches: storedMatches });
+    }
+
+    console.log('Getting ALL matches from Tinder with token: ', accessToken);
     const matches = await getMatchesFromAllPages(accessToken, "first");
     await storeMatchesFromTinder(req.body.userId, matches);
 
@@ -38,7 +42,7 @@ async function tinderRequest(url, method, accessToken) {
 async function getMatchesFromAllPages(accessToken, pageToken, allMatches=[]){
   if (pageToken === undefined) return allMatches;
   const nextPageToken = (pageToken !== 'first') ? pageToken : null;
-  const { matches, next_page_token } = await getMatchesFromTinderPage(accessToken, nextPageToken);
+  const { matches=[], next_page_token } = await getMatchesFromTinderPage(accessToken, nextPageToken);
   const aggregatedMatches = allMatches.concat(matches);
   return getMatchesFromAllPages(accessToken, next_page_token, aggregatedMatches);
 }
@@ -46,13 +50,12 @@ async function getMatchesFromAllPages(accessToken, pageToken, allMatches=[]){
 async function getMatchesFromTinderPage(accessToken, pageToken) {
   const query = querystring.stringify({ page_token: pageToken });
   
-  const { data: { matches, next_page_token } } = await tinderRequest(`https://api.gotinder.com/v2/matches?${query}`, 'GET', accessToken);
+  const { data: { matches=[], next_page_token } } = await tinderRequest(`https://api.gotinder.com/v2/matches?${query}`, 'GET', accessToken);
   const userData = await Promise.all(matches.map(async (match) => {
-    const { results } = await tinderRequest(`https://api.gotinder.com/user/${match.person._id}?locale=en-GB`, 'GET', accessToken);
+    const { results={} } = await tinderRequest(`https://api.gotinder.com/user/${match.person._id}?locale=en-GB`, 'GET', accessToken);
     return {...results};
   }));
   console.log('next_page_token: ', next_page_token);
-  console.log('userData: ', userData);
   return { matches: userData, next_page_token };
 }
 
