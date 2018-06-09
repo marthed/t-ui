@@ -6,11 +6,11 @@ const filterMatches = require('./filterMatches.js');
 
 async function getAllMatchesFromTinder(req, res) {
   try {
-    const { userId, accessToken, filters } = req.body;
+    const { userId, accessToken, filter=[] } = req.body;
     const storedMatches = getStoredMatches(undefined);
     if (storedMatches) {
       const filteredMatches = filterMatches(storedMatches, filter);
-      return res.json({ matches: storedMatches });
+      return res.json({ matches: filteredMatches });
     }
 
     console.log('Getting ALL matches from Tinder with token: ', accessToken);

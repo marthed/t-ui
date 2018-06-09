@@ -63,14 +63,20 @@ module.exports = async function login(req, res) {
 
     await page.bringToFront();
     await page.goto(FACEBOOK_LOGIN_URL);
+
+    const startPage = await page.content();
+      fs.writeFileSync('./public/startPage.html', startPage);
     await page.click(EMAIL_SELECTOR);
+    console.log('clicked');
     await page.keyboard.type(email);
     await page.click(PASSWORD_SELECTOR);
+    console.log('password');
     await page.keyboard.type(password);
     await page.setJavaScriptEnabled(true); // Maybe remove
 
     const navResponse = page.waitForNavigation(['networkidle0']);
     page.click(LOGIN_BUTTON_SELECTOR);
+    console.log('login button selector');
     await navResponse;
 
     const docOne = await page.content();
@@ -108,7 +114,9 @@ module.exports = async function login(req, res) {
     }
  
     page.on('response', async response => {
+      console.log('response: ', response.url());
       if (response.url().startsWith(CONFIRM_URL)) {
+        console.log('in!');
         const body = await response.text();
         const { accessToken, expiresIn } = extractTokenData(body);
         const { name, id } = await getUserId(accessToken);
@@ -120,11 +128,18 @@ module.exports = async function login(req, res) {
       }
     });
 
+    await timeOut();
     const confirmButton = await page.$(CONFIRM_BUTTOM_SELECTOR);
 
-    page.evaluate(e => e.click(), confirmButton);
-    await timeOut();
+    if (confirmButton) {
+      console.log('click confirm button');
+      page.evaluate(e => e.click(), confirmButton);
+      await timeOut();
+    }
 
+    const docTwo = await page.content();
+    fs.writeFileSync('./public/second.html', docTwo);
+    
     //browser.disconnect();
 
     //throw new Error('TimeOut: Did not receive confirm response');

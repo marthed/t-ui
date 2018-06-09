@@ -11,7 +11,7 @@ export default class MainContainer extends React.Component {
     this.state = {
       matches: [],
       isFetching: false,
-      filters: null,
+      filter: {},
     }
   }
 
@@ -31,27 +31,6 @@ export default class MainContainer extends React.Component {
     }
   };
   
-  setFilters = (filters) => this.setState({ filters });
-  
-  filter = (filter, match, filters) => {
-    switch (filter) {
-      case 'distance_mi':
-        return match[filter] < filters[filter];
-      default:
-        return false;
-    };
-  }
-
-  filterMatches = (matches, filters) => {
-    if (!filters || filters.length === 0) return matches;
-    const filterKeys = Object.keys(filters);
-    return matches.filter((match) => {
-      const hej = filterKeys.filter((filter) => this.filter(filter, match, filters));
-      if (!hej || hej.length === 0) return false;
-      return true;
-    });
-  }
-
 
   renderMatches = () => {
     const { matches=[], isFetching, filters } = this.state;
@@ -71,7 +50,7 @@ export default class MainContainer extends React.Component {
   }
 
   render () {
-    const { matches=[], isFetching, filters } = this.state;
+    const { matches=[], isFetching, filter } = this.state;
 
     return (
       <div className="main-container">
@@ -85,9 +64,9 @@ export default class MainContainer extends React.Component {
         </div>}
         {matches.length > 0 &&
         <FilterContainer
-          setFilters={this.setFilters}
+          getMatches={getMatches}
           isFetching={isFetching}
-          filters={filters}
+          filter={filter}
         />
         }
         <div className="main-container__matches">

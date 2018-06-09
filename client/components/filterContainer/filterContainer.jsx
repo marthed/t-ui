@@ -1,6 +1,7 @@
 import React from 'react';
 //import FilterOption from './filterOption';
 import './filterContainer.css';
+import PropTypes from 'prop-types';
 
 export default class FilterContainer extends React.Component {
 
