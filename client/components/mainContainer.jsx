@@ -15,13 +15,14 @@ export default class MainContainer extends React.Component {
     }
   }
 
-  getAllMatches = async () => {
+  getMatches = async () => {
     const { accessToken, userId } = this.props;
     const pageToken = sessionStorage.getItem('pageToken');
+    const filter = sessionStorage.getItem('filter');
     this.setState({ isFetching: true });
 
     try {
-      const matches=[] = await getMatches({ accessToken, pageToken, userId });
+      const matches=[] = await getMatches({ accessToken, pageToken, userId, filter });
       this.setState({ matches, isFetching: false });
       console.log('matches: ', matches);
     }
@@ -30,7 +31,6 @@ export default class MainContainer extends React.Component {
       console.log(error);
     }
   };
-  
 
   renderMatches = () => {
     const { matches=[], isFetching, filters } = this.state;
@@ -49,6 +49,8 @@ export default class MainContainer extends React.Component {
     );
   }
 
+  setFilter = () =>
+
   render () {
     const { matches=[], isFetching, filter } = this.state;
 
@@ -64,7 +66,7 @@ export default class MainContainer extends React.Component {
         </div>}
         {matches.length > 0 &&
         <FilterContainer
-          getMatches={getMatches}
+          getMatches={this.getMatches}
           isFetching={isFetching}
           filter={filter}
         />

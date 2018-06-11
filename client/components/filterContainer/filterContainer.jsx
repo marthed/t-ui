@@ -3,6 +3,7 @@ import React from 'react';
 import './filterContainer.css';
 import PropTypes from 'prop-types';
 
+
 export default class FilterContainer extends React.Component {
 
   constructor(props) {
@@ -26,7 +27,8 @@ export default class FilterContainer extends React.Component {
   }
 
   updateFilters = () => {
-    this.props.setFilters({ ...this.state.filters });
+    this.props.setFilter({ ...this.state.filters });
+    this.props.getMatches();
     this.setState({ isOpen: false });
   }
 
@@ -72,5 +74,10 @@ export default class FilterContainer extends React.Component {
       </div>
     )
   }
+}
 
+FilterContainer.PropTypes = {
+  getMatches: PropTypes.func.isRequired,
+  isFetching: PropTypes.bool.isRequired,
+  filter: PropTypes.shape({}).isRequired,
 }
