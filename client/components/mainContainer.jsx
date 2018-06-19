@@ -1,8 +1,8 @@
 import React from 'react';
-import axios from 'axios';
 import MatchBox from './matchBox.jsx';
 import FilterContainer from './filterContainer/filterContainer.jsx';
 import { getMatches } from '../utils/webAPI';
+import PropTypes from 'prop-types';
 
 export default class MainContainer extends React.Component {
 
@@ -17,12 +17,11 @@ export default class MainContainer extends React.Component {
 
   getMatches = async () => {
     const { accessToken, userId } = this.props;
-    const pageToken = sessionStorage.getItem('pageToken');
     const filter = sessionStorage.getItem('filter');
     this.setState({ isFetching: true });
 
     try {
-      const matches=[] = await getMatches({ accessToken, pageToken, userId, filter });
+      const matches = await getMatches({ accessToken, userId, filter });
       this.setState({ matches, isFetching: false });
       console.log('matches: ', matches);
     }
@@ -33,7 +32,7 @@ export default class MainContainer extends React.Component {
   };
 
   renderMatches = () => {
-    const { matches=[], isFetching, filters } = this.state;
+    const { matches=[], isFetching } = this.state;
     if (!matches.length) return null;
     return matches.map((match, idx) => {
       return <MatchBox key={idx} match={match} />
@@ -49,7 +48,7 @@ export default class MainContainer extends React.Component {
     );
   }
 
-  setFilter = () =>
+  setFilter = () => {};
 
   render () {
     const { matches=[], isFetching, filter } = this.state;
@@ -60,7 +59,7 @@ export default class MainContainer extends React.Component {
         <div className="button-container">
           <button
             disabled={isFetching}
-            onClick={this.getAllMatches}>
+            onClick={this.getMatches}>
             {isFetching ? 'Hämtar...' : "Hämta alla matchningar"}
           </button>
         </div>}
@@ -77,5 +76,9 @@ export default class MainContainer extends React.Component {
     </div>
     )
   }
-  
+}
+
+MainContainer.PropTypes = {
+  accessToken: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
 }

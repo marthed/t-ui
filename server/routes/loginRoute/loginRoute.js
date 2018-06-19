@@ -1,6 +1,4 @@
-const puppeteer = require('puppeteer');
 const axios = require('axios');
-const path = require('path');
 const fs = require('fs');
 
 const { getBrowser, setPage } = require('./browser');

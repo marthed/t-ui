@@ -6,6 +6,7 @@
     },
     "extends": "eslint:recommended",
     "parserOptions": {
+        "ecmaVersion": 2017,
         "ecmaFeatures": {
             "experimentalObjectRestSpread": true,
             "jsx": true
@@ -28,9 +29,8 @@
             "error",
             "single"
         ],
-        "semi": [
-            "error",
-            "never"
-        ]
+        "comma-dangle": [
+            "error", "always-multiple"
+        ],
     }
 }

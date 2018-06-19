@@ -1,5 +1,6 @@
 node_modules
 server/routes/accessToken.js
 server/routes/creds.js
+server/routes/matchesRoute/storedMatches
 server/ssl
 public/dist
