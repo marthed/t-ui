@@ -7,7 +7,8 @@ const filterMatches = require('./filterMatches.js');
 async function getAllMatchesFromTinder(req, res) {
   try {
     const { userId, accessToken, filter=[] } = req.body;
-    const storedMatches = getStoredMatches(undefined);
+    console.log('userId: ', userId);
+    const storedMatches = getStoredMatches(userId);
     if (storedMatches) {
       const filteredMatches = filterMatches(storedMatches, filter);
       return res.json({ matches: filteredMatches });
@@ -15,7 +16,7 @@ async function getAllMatchesFromTinder(req, res) {
 
     console.log('Getting ALL matches from Tinder with token: ', accessToken);
     const matches = await getMatchesFromAllPages(accessToken, "first");
-    await storeMatchesFromTinder(req.body.userId, matches);
+    await storeMatchesFromTinder(userId, matches);
 
     res.json({ matches });
   }

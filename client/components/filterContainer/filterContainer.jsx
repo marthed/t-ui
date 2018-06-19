@@ -54,7 +54,7 @@ export default class FilterContainer extends React.Component {
               Använd filter
             </button>
             <button onClick={this.cleanFilters} disabled={isFetching}>
-              "Rensa filter"
+              Rensa filter
             </button>
           </div>
       </div>

@@ -5,17 +5,18 @@ const isWithinRange = (range, match) => {
    return true;
 }
 
-module.exports = async function filterMatches(matches, filter) {
+module.exports = function filterMatches(matches, filter) {
 
-  const filterNames = Object.keys(filter);
-
-  const filteredmatches = matches.filter((match) => {
-
-    if (filter.distance && !isWithinRange(filter.distance, match)) return false;
-
-    return true;
-  });
-
-  return filteredMatches;
+  try {
+    const filteredmatches = matches.filter((match) => {
+      if (filter.distance && !isWithinRange(filter.distance, match)) return false;
+      return true;
+    });
+    return filteredmatches;
+  }
+  catch (e) {
+    console.log(e);
+    return [];
+  }
 }
 

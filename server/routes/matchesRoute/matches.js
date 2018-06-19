@@ -14,14 +14,12 @@ async function storeMatchesFromTinder(key, m) {
 function getStoredMatches(key) {
   try {
     const matchesFromFile = require(path.join(__dirname, `/storedMatches/${key}-matches.json`));
-    console.log('matchesFromFile: ', matchesFromFile);
     if (matchesFromFile) return matchesFromFile;
   }
   catch (e) {
     console.log(e.message);
     console.log(`Did not find stored matches for /storedMatches/${key}-matches.json`);
   }
-  console.log('matches: ', matches);
   if (matches) return matches;
 }
 
