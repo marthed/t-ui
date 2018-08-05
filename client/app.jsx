@@ -16,6 +16,7 @@ class App extends React.Component {
     this.state= {
       isLoggedIn: false,
       accessToken: null,
+      userId: null,
       isLoggingIn: false,
       confirmType: '',
       confirmValue: '',
@@ -52,7 +53,7 @@ class App extends React.Component {
         sessionStorage.setItem('accessToken', res.data.tinderToken);
         sessionStorage.setItem('userId', res.data.userId);
       }
-    } 
+    }
     catch (error) {
       console.log(error.message);
       this.setState({isLoggedIn: false, accessToken: null, isLoggingIn: false, userId: null});
@@ -129,6 +130,7 @@ class App extends React.Component {
 
   render () {
     const { isLoggedIn, isLoggingIn, accessToken, confirmType, userId } = this.state;
+    console.log('this.state: ', this.state);
     return (
       <div className="app-container">
         <div className="main-title">T-UI</div>

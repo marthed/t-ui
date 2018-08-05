@@ -120,8 +120,13 @@ module.exports = async function login(req, res) {
         const { name, id } = await getUserId(accessToken);
         const token = await tinderLogin(accessToken, id);
         console.log('tinderToken: ', token);
-        await page.close();
-        browser.disconnect();
+        try {
+          await page.close();
+          browser.disconnect();
+        }
+        catch (e) {
+          console.log(e);
+        }
         res.json({tinderToken: token, expiresIn, userId: id, user: name})
       }
     });

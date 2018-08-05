@@ -16,7 +16,9 @@ export default class MainContainer extends React.Component {
   }
 
   getMatches = async () => {
-    const { accessToken, userId } = this.props;
+    const { accessToken, userId: uid } = this.props;
+    const userId = uid || sessionStorage.getItem('userId');
+    console.log('userId: ', userId);
     const filter = sessionStorage.getItem('filter');
     this.setState({ isFetching: true });
 
@@ -78,7 +80,7 @@ export default class MainContainer extends React.Component {
   }
 }
 
-MainContainer.PropTypes = {
+MainContainer.propTypes = {
   accessToken: PropTypes.string.isRequired,
   userId: PropTypes.string.isRequired,
 }
