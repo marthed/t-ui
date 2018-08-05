@@ -31,6 +31,6 @@
         ],
         "comma-dangle": [
             "error", "always-multiple"
-        ],
+        ]
     }
 }
