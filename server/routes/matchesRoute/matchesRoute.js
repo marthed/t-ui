@@ -22,7 +22,7 @@ async function getAllMatchesFromTinder(req, res) {
   }
   catch (error) {
     console.log(error);
-    res.statusCode(500);
+    res.send(error);
   }
 }
 
@@ -42,20 +42,34 @@ async function tinderRequest(url, method, accessToken) {
 
 async function getMatchesFromAllPages(accessToken, pageToken, allMatches=[]){
   if (pageToken === undefined) return allMatches;
-  const nextPageToken = (pageToken !== 'first') ? pageToken : null;
+  const nextPageToken = (pageToken === 'first') ? null : pageToken;
   const { matches=[], next_page_token } = await getMatchesFromTinderPage(accessToken, nextPageToken);
   const aggregatedMatches = allMatches.concat(matches);
   return getMatchesFromAllPages(accessToken, next_page_token, aggregatedMatches);
 }
 
 async function getMatchesFromTinderPage(accessToken, pageToken) {
-  const query = querystring.stringify({ page_token: pageToken });
+  const queryParamters = pageToken ? { page_token: pageToken } : { count: 60 }
+  const query = querystring.stringify(queryParamters);
   
-  const { data: { matches=[], next_page_token } } = await tinderRequest(`https://api.gotinder.com/v2/matches?${query}`, 'GET', accessToken);
-  const userData = await Promise.all(matches.map(async (match) => {
-    const { results={} } = await tinderRequest(`https://api.gotinder.com/user/${match.person._id}?locale=en-GB`, 'GET', accessToken);
-    return {...results};
-  }));
+  let userData;
+  try {
+    const { data: { matches=[], next_page_token } } = await tinderRequest(`https://api.gotinder.com/v2/matches?${query}`, 'GET', accessToken);
+    userData = await Promise.all(matches.map(async (match) => {
+      try {
+        const { results={} } = await tinderRequest(`https://api.gotinder.com/user/${match.person._id}?locale=en-GB`, 'GET', accessToken);
+        return {...results};
+      }
+      catch (e) {
+        return {...match, error: e}
+      }
+    }));
+  }
+  catch (error) {
+    console.log(error);
+    console.log('\n \n Returning with what we got!');
+    return { matches: userData}
+  }
   console.log('next_page_token: ', next_page_token);
   return { matches: userData, next_page_token };
 }
@@ -70,7 +84,7 @@ const routeWrapper = (handler) => async (req, res) => {
   } 
   catch (error) {
     console.log(error.message);
-    res.statusCode(500);
+    return error;
   }
 }
 
