@@ -35,6 +35,8 @@ class App extends React.Component {
         }
       });
 
+      console.log(res);
+
       if (res.data.confirmType === 'birthday') {
         this.setState({ confirmType: 'birthday', isLoggingIn: false });
       }
@@ -55,7 +57,7 @@ class App extends React.Component {
       }
     }
     catch (error) {
-      console.log(error.message);
+      console.log('Error: ', error.message);
       this.setState({isLoggedIn: false, accessToken: null, isLoggingIn: false, userId: null});
     }
   }
@@ -130,7 +132,6 @@ class App extends React.Component {
 
   render () {
     const { isLoggedIn, isLoggingIn, accessToken, confirmType, userId } = this.state;
-    console.log('this.state: ', this.state);
     return (
       <div className="app-container">
         <div className="main-title">T-UI</div>
