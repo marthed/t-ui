@@ -6,13 +6,10 @@ import PropTypes from 'prop-types';
 
 export default class FilterContainer extends React.Component {
 
-  constructor(props) {
-    super(props);
-    this.state ={
-      isOpen: false,
-      maxDistance: 1
-    }
-  }
+  state = {
+    isOpen: false,
+    maxDistance: 1
+  };
 
   toggleOpen = () => this.setState({ isOpen: !this.state.isOpen });
 
@@ -76,7 +73,7 @@ export default class FilterContainer extends React.Component {
   }
 }
 
-FilterContainer.PropTypes = {
+FilterContainer.propTypes = {
   getMatches: PropTypes.func.isRequired,
   isFetching: PropTypes.bool.isRequired,
   filter: PropTypes.shape({}).isRequired,

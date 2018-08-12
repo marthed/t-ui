@@ -10,16 +10,12 @@ const {
   CONFIRM_URL,
   FACEBOOK_LOGIN_URL,
   CONTINUE_BUTTON,
-  CONFIRM_RADIO_BUTTON_BIRTHDAY,
-  CONFIRM_RADIO_BUTTON_DEVICE,
   CONFIRM_IDENTITY_SELECTOR,
-  ASK_FOR_BIRTHDAY_SELECTOR,
 } = require('./loginConstants');
 
 
-
-function timeOut() {
-  return new Promise(resolve => setTimeout(resolve, 3000)); // Improve
+function timeOut(time=3000) {
+  return new Promise(resolve => setTimeout(resolve, time)); // Improve
 }
 
 async function getUserId(accessToken) {
@@ -51,12 +47,54 @@ async function tinderLogin(accessToken, userId) {
 };
 
 
+setPageOn = (page, res, browser) => {
+  console.log('set page on');
+  page.on('response', async response => {
+    console.log('response: ', response.url());
+    if (response.url().startsWith(CONFIRM_URL)) {
+      console.log('in!');
+      const body = await response.text();
+      const { accessToken, expiresIn } = extractTokenData(body);
+      const { name, id } = await getUserId(accessToken);
+      const token = await tinderLogin(accessToken, id);
+      console.log('tinderToken: ', token);
+      try {
+        await page.close();
+        browser.disconnect();
+      }
+      catch (e) {
+        console.log(e);
+      }
+      return res.json({tinderToken: token, expiresIn, userId: id, user: name})
+    }
+  });
+  return page;
+}
+
+bla = async (page, res, browser) => {
+  const confirmButton = await page.$(CONFIRM_BUTTOM_SELECTOR);
+  console.log('confirmButton: ', confirmButton);
+  if (confirmButton) {
+    console.log('confirm button');
+    const listeningPage = setPageOn(page, res, browser);
+    console.log('click confirm button');
+    listeningPage.evaluate(e => e.click(), confirmButton);
+    await timeOut(1000);
+    await timeOut(1000);
+    await timeOut(1000);
+    await timeOut(1000);
+    await timeOut(1000);
+  }
+  else {
+    return res.json('Could not find stuff');
+  }
+}
 
 module.exports = async function login(req, res) {
   try {
+    // Steg 1. Gå till login adressen.
     const browser = await getBrowser();
     const page = await browser.newPage();
-
     const { email, password } = req.body;
 
     await page.bringToFront();
@@ -64,6 +102,13 @@ module.exports = async function login(req, res) {
 
     const startPage = await page.content();
       fs.writeFileSync('./public/startPage.html', startPage);
+
+    await timeOut();
+    if (await page.$(CONFIRM_BUTTOM_SELECTOR)) {
+      console.log('return bla');
+      return bla(page, res, browser);
+    }
+
     await page.click(EMAIL_SELECTOR);
     console.log('clicked');
     await page.keyboard.type(email);

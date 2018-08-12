@@ -6,9 +6,10 @@ let matches;
 
 async function storeMatchesFromTinder(key, m) {
   matches = m;
-  await fs.writeFile(path.join(__dirname, `/storedMatches/${key}-matches.json`), JSON.stringify(matches), 'utf8', function(){
-    console.log(`${path.join(__dirname, `/storedMatches/'${key}'-matches.json`)} stored`);
+  await fs.writeFile(path.join(__dirname, `/storedMatches/${key}-matches.json`), JSON.stringify(m), 'utf8', function(){
+    console.log(`${path.join(__dirname, `/storedMatches/${key}-matches.json`)} stored`);
   });
+  return;
 };
 
 function getStoredMatches(key) {
