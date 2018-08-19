@@ -5,9 +5,9 @@ import ReactDOM from 'react-dom';
 import axios from 'axios';
 import moment from 'moment';
 
-import styles from './style.css';
+import './style.css';
 import MainContainer from './components/mainContainer.jsx';
-import Login from './components/login.jsx';
+import Login from './components/login/login.jsx';
 
 class App extends React.Component {
 
@@ -15,9 +15,9 @@ class App extends React.Component {
     super(props);
     this.state= {
       isLoggedIn: false,
+      isLoggingIn: false,
       accessToken: null,
       userId: null,
-      isLoggingIn: false,
       confirmType: '',
       confirmValue: '',
     }
@@ -58,7 +58,7 @@ class App extends React.Component {
     }
     catch (error) {
       console.log('Error: ', error.message);
-      this.setState({isLoggedIn: false, accessToken: null, isLoggingIn: false, userId: null});
+      this.setState({ isLoggedIn: false, accessToken: null, isLoggingIn: false, userId: null });
     }
   }
 
@@ -71,20 +71,18 @@ class App extends React.Component {
     if (loginTime && (accessToken !== 'undefined')) {
       if (moment(Number(loginTime)).add(2, 'hours') > moment().valueOf()) {
         console.log('Already logged in');
-        this.setState({ isLoggedIn: true, accessToken: sessionStorage.getItem('accessToken')});
+        this.setState({ isLoggedIn: true, accessToken });
       }
       else {
         console.log('Token expiered!');
-        sessionStorage.setItem('accessToken', null);
+        sessionStorage.setItem('accessToken', undefined);
         sessionStorage.setItem('loginTime', null);
       }
     }
   }
 
-  confirmLogin = ({type, value }) => async () => {
-    console.log('type: ', type);
-    console.log('value: ', value);
-    this.setState({ isLoggingIn: true});
+  confirmLogin = ({ type, value }) => async () => {
+    this.setState({ isLoggingIn: true });
     try {
      const res = await axios.request({
         url: '/login/confirm',
@@ -107,25 +105,6 @@ class App extends React.Component {
     }
   }
 
-  renderConfirmLogin = () => {
-    const { confirmType, confirmValue, isLoggingIn } = this.state;
-    if (confirmType === 'device') {
-      return (
-      <div className="confirmLogin">
-        <label>Logga in på en enhet du använt tidigare</label>
-        <button onClick={this.confirmLogin({type: confirmType})} disabled={isLoggingIn}>Fortsätt</button>
-      </div>
-      )
-    };
-    return (
-      <div className="confirmLogin">
-        <label>Ange ditt födelsedatum</label>
-        <input type="date" name="bday" onChange={(date) => this.setState({confirmValue: date})} />
-        <button onClick={this.confirmLogin({type: confirmType, value: confirmValue })} disabled={isLoggingIn}>Fortsätt</button>
-      </div>
-      )
-  }
-
   componentWillMount() {
     this.checkLoginStatus();
   }
@@ -137,12 +116,13 @@ class App extends React.Component {
         <div className="main-title">T-UI</div>
           {isLoggedIn ?
             <MainContainer accessToken={accessToken} userId={userId}/> :
-            <div>
-            <div className="button-container">
-              <Login onConfirm={this.login} isLoggingIn={isLoggingIn} />
-              {confirmType && this.renderConfirmLogin()}
-            </div>
-            </div>}
+              <Login
+                onConfirm={this.login}
+                isLoggingIn={isLoggingIn}
+                confirmType={confirmType}
+                confirmLogin={this.confirmLogin}
+              />
+            }
         </div>
       )
   }

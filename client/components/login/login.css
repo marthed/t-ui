@@ -1,0 +1,18 @@
+.login {
+  display: flex;
+  flex-direction: column;
+  }
+
+  .login label {
+    color: rgb(105, 103, 103);
+    margin-top: 12px;
+  }
+
+  .login button {
+    margin-top: 30px;
+    margin-bottom: 10px;
+  }
+
+  .login__missing-input {
+    color: red;
+  }
