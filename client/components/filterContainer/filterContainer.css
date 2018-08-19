@@ -10,6 +10,10 @@
   width: 30px;
 }
 
+.filter-container__toggle-button:hover {
+  background-color: rgb(177, 174, 174);
+}
+
 /* Closed filterContainer */
 .filter-container-closed {
   width: 100%;
@@ -28,9 +32,7 @@
 }
 
 .filter-container-open .button-container {
-  position: absolute;
-  bottom: 0;
-  margin-bottom: 2px;
+  margin-top: 4px;
   right: 45%;
 }
 
