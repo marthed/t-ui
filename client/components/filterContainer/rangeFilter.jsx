@@ -1,8 +1,13 @@
 import React from 'react';
 
-export default class FilterOption extends React.Component {
+export default class RangeFilter extends React.Component {
+
+  onChange = (evt) => {
+    console.log(evt.target.value);
+  };
+
   render () {
-    const { minValue, onChange, label } = this.props;
+    const { label, filter } = this.props;
     return (
       <div className="filter-option">
         <label>
@@ -12,17 +17,17 @@ export default class FilterOption extends React.Component {
           type="number"
           name="min_dis"
           min="1"
-          max={value}
-          value={value}
-          onChange={onChange}
+          //max={value}
+          //value={value}
+          onChange={this.onChange}
           />
         <input
           type="number"
           name="max_dis"
-          min={value}
+          //min={value}
           max="500"
-          value={value}
-          onChange={this.handleChange}
+          //value={value}
+          onChange={this.onChange}
           />
       </div>
     );

@@ -1,5 +1,5 @@
 import React from 'react';
-//import FilterOption from './filterOption';
+import RangeFilter from './rangeFilter.jsx';
 import './filterContainer.css';
 import PropTypes from 'prop-types';
 
@@ -8,19 +8,15 @@ export default class FilterContainer extends React.Component {
 
   state = {
     isOpen: false,
-    maxDistance: 1
+    tempFilter: {},
   };
+
 
   toggleOpen = () => this.setState({ isOpen: !this.state.isOpen });
 
-  cleanFilters = () => {
-    const { setFilters } = this.props;
-    setFilters(null);
-    this.setState({isOpen: false, maxDistance: 1});
-  }
-
-  handleChange = (evt) => {
-    this.setState({maxDistance: evt.target.value })
+  clearFilters = () => {
+    this.props.setFilter(null);
+    this.props.getMatches();
   }
 
   updateFilters = () => {
@@ -35,25 +31,36 @@ export default class FilterContainer extends React.Component {
     <div className="filter-container-closed">
       {filters &&
       <div className="filter-container-closed__selected-filter">
-        Max distans: {filters.distance_mi}
       </div>
       }
     </div>
     )
   };
 
+  setTempFilter = type => filter => this.setState({ tempFilter: { [type]: filter }});
+
+  renderFilterOptions = () => (
+    <div className="filter-container__filter-options">
+      <RangeFilter
+        label="Avstånd"
+        setFilter={this.setTempFilter('distance')}
+        />
+    </div>
+  );
+
   renderOpenContainer = () => {
     const { isFetching } = this.props;
     return (
       <div className="filter-container-open">
-          <div className="button-container" >
-            <button onClick={this.updateFilters} disabled={isFetching}>
-              Använd filter
-            </button>
-            <button onClick={this.cleanFilters} disabled={isFetching}>
-              Rensa filter
-            </button>
-          </div>
+        {this.renderFilterOptions()}
+        <div className="button-container" >
+          <button onClick={this.updateFilters} disabled={isFetching}>
+            Använd filter
+          </button>
+          <button onClick={this.clearFilters} disabled={isFetching}>
+            Rensa filter
+          </button>
+        </div>
       </div>
     )
   }

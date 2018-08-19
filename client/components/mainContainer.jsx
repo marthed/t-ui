@@ -50,14 +50,14 @@ export default class MainContainer extends React.Component {
     );
   }
 
-  setFilter = () => {};
+  setFilter = filter => this.setState({ filter });
 
   render () {
     const { matches=[], isFetching, filter } = this.state;
 
     return (
       <div className="main-container">
-        {matches.length === 0 && 
+        {!matches.length && 
         <div className="button-container">
           <button
             disabled={isFetching}
