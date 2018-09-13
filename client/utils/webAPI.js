@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-export const getMatches = async (data, filters={}) => {
+export const getMatches = async data => {
 
-  const { accessToken, pageToken, userId } = data;
+  const { accessToken, pageToken, userId, filter } = data;
 
   const res = await axios.request({
     url: `/matches`,
@@ -11,7 +11,7 @@ export const getMatches = async (data, filters={}) => {
       accessToken,
       pageToken,
       userId,
-      filters,
+      filter,
     }
   });
   const { matches=[] } = res.data;

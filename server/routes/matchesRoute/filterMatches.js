@@ -1,7 +1,8 @@
 
 const isWithinRange = (range, match) => {
-   if (range.max && range.max > match.distance_mi) return false;
-   if (range.min && range.min < match.distance_mi) return false;
+    console.log(`max:${range.max} dis:${match.distance_mi}`);
+   if (range.max && range.max < match.distance_mi) return false;
+   if (range.min && range.min > match.distance_mi) return false;
    return true;
 }
 
