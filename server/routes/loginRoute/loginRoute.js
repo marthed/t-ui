@@ -104,6 +104,8 @@ module.exports = async function login(req, res) {
       fs.writeFileSync('./public/startPage.html', startPage);
 
     await timeOut();
+
+    // Om bekräfta-sidan redan finns.
     if (await page.$(CONFIRM_BUTTOM_SELECTOR)) {
       console.log('return bla');
       return bla(page, res, browser);

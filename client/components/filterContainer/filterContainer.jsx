@@ -15,13 +15,13 @@ export default class FilterContainer extends React.Component {
   toggleOpen = () => this.setState({ isOpen: !this.state.isOpen });
 
   clearFilters = () => {
-    this.props.setFilter(null);
-    this.props.getMatches();
+    this.setState({ tempFilter: {}});
+    this.props.setFilter({});
   }
 
   updateFilters = () => {
-    this.props.setFilter({ ...this.state.filters });
-    this.props.getMatches();
+    console.log(this.state.tempFilter);
+    this.props.setFilter(this.state.tempFilter);
     this.setState({ isOpen: false });
   }
 
@@ -37,13 +37,19 @@ export default class FilterContainer extends React.Component {
     )
   };
 
-  setTempFilter = type => filter => this.setState({ tempFilter: { [type]: filter }});
+  setTempFilter = type => filter => {
+    const { tempFilter } = this.state;
+    const filterToUpdate = tempFilter[type] || {};
+    const updatedFilter = { ...filterToUpdate, ...filter };
+    this.setState({ tempFilter: { [type]: updatedFilter }});
+  };
 
   renderFilterOptions = () => (
     <div className="filter-container__filter-options">
       <RangeFilter
         label="Avstånd"
         setFilter={this.setTempFilter('distance')}
+        filter={this.state.tempFilter.distance}
         />
     </div>
   );
@@ -81,7 +87,7 @@ export default class FilterContainer extends React.Component {
 }
 
 FilterContainer.propTypes = {
-  getMatches: PropTypes.func.isRequired,
   isFetching: PropTypes.bool.isRequired,
   filter: PropTypes.shape({}).isRequired,
+  setFilter: PropTypes.func.isRequired,
 }

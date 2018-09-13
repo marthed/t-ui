@@ -19,7 +19,8 @@ export default class MainContainer extends React.Component {
     const { accessToken } = this.props;
     const userId = sessionStorage.getItem('userId');
     console.log('userId: ', userId);
-    const filter = sessionStorage.getItem('filter');
+    const filter = this.state.filter;
+    console.log('filter: ', filter);
     this.setState({ isFetching: true });
 
     try {
@@ -50,7 +51,7 @@ export default class MainContainer extends React.Component {
     );
   }
 
-  setFilter = filter => this.setState({ filter });
+  setFilter = filter => this.setState({ filter }, this.getMatches);
 
   render () {
     const { matches=[], isFetching, filter } = this.state;
@@ -70,6 +71,7 @@ export default class MainContainer extends React.Component {
           getMatches={this.getMatches}
           isFetching={isFetching}
           filter={filter}
+          setFilter={this.setFilter}
         />
         }
         <div className="main-container__matches">

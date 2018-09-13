@@ -6,7 +6,8 @@ const filterMatches = require('./filterMatches.js');
 
 async function getAllMatchesFromTinder(req, res) {
   try {
-    const { userId, accessToken, filter=[] } = req.body;
+    const { userId, accessToken, filter={} } = req.body;
+
     if (!userId) {
       return res.status(400).json({ message: `userId: ${userId} is not valid`});
     }
