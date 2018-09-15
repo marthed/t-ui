@@ -29,6 +29,18 @@ input::-webkit-inner-spin-button {
   justify-content: center;
 }
 
+.button-container > button {
+  border: none;
+  border-radius: 0;
+  margin: 4px;
+  -webkit-transition-duration: 0.4s;
+  transition-duration: 0.4s;
+}
+
+.button-container > button:hover {
+  background-color: lightgray;
+}
+
 .button-container__more-matches {
   display: flex;
   justify-content: center;

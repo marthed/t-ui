@@ -1,5 +1,8 @@
 .filter-option {
-  min-height: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
   background: red;
 }
 
@@ -9,6 +12,7 @@
 
 .filter-option input {
   margin-left: 5px;
+  width: 36px;
   border: none;
   border-bottom: 1px solid lightgray;
   text-align: center;
