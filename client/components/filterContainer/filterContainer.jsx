@@ -20,7 +20,6 @@ export default class FilterContainer extends React.Component {
   }
 
   updateFilters = () => {
-    console.log(this.state.tempFilter);
     this.props.setFilter(this.state.tempFilter);
     this.setState({ isOpen: false });
   }
