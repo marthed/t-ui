@@ -1,0 +1,23 @@
+.filter-option {
+  min-height: 20px;
+  background: red;
+}
+
+.filter-option label {
+  margin-left: 5px;
+}
+
+.filter-option input {
+  margin-left: 5px;
+  border: none;
+  border-bottom: 1px solid lightgray;
+  text-align: center;
+}
+
+.filter-option input:focus {
+  margin-left: 5px;
+  border: none;
+  border-bottom: 3px solid lightblue;
+  text-align: center;
+  outline: none;
+}

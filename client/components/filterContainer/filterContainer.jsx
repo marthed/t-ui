@@ -1,5 +1,5 @@
 import React from 'react';
-import RangeFilter from './rangeFilter.jsx';
+import RangeFilter from './filters/rangeFilter.jsx';
 import './filterContainer.css';
 import PropTypes from 'prop-types';
 
@@ -45,11 +45,11 @@ export default class FilterContainer extends React.Component {
   };
 
   renderFilterOptions = () => (
-    <div className="filter-container__filter-options">
+    <div className="filter-container-open__top">
       <RangeFilter
         label="Avstånd"
         setFilter={this.setTempFilter('distance')}
-        filter={this.state.tempFilter.distance}
+        filter={this.state.tempFilter.distance || this.props.filter.distance}
         />
     </div>
   );
@@ -59,13 +59,15 @@ export default class FilterContainer extends React.Component {
     return (
       <div className="filter-container-open">
         {this.renderFilterOptions()}
-        <div className="button-container" >
-          <button onClick={this.updateFilters} disabled={isFetching}>
-            Använd filter
-          </button>
-          <button onClick={this.clearFilters} disabled={isFetching}>
-            Rensa filter
-          </button>
+        <div className="filter-container-open__bottom">
+          <div className="button-container">
+            <button onClick={this.updateFilters} disabled={isFetching}>
+              Använd filter
+            </button>
+            <button onClick={this.clearFilters} disabled={isFetching}>
+              Rensa filter
+            </button>
+          </div>
         </div>
       </div>
     )

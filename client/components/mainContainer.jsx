@@ -15,18 +15,34 @@ export default class MainContainer extends React.Component {
     }
   }
 
+  componentDidMount() {
+    const matches = localStorage.getObj('matches');
+    console.log('matches: ', matches);
+    console.log('matches: ', typeof matches);
+    const filter = localStorage.getObj('filter') || {};
+    console.log('filter: ', filter);
+    console.log('filter: ', typeof filter);
+    if (matches) {
+      this.setState({ matches, filter });
+    }
+    else {
+      this.setState({ filter }, () => {
+        this.getMatches();
+      });
+    }
+  }
+
   getMatches = async () => {
     const { accessToken } = this.props;
     const userId = sessionStorage.getItem('userId');
     console.log('userId: ', userId);
     const filter = this.state.filter;
-    console.log('filter: ', filter);
     this.setState({ isFetching: true });
 
     try {
       const matches = await getMatches({ accessToken, userId, filter });
       this.setState({ matches, isFetching: false });
-      console.log('matches: ', matches);
+      localStorage.setObj('matches', matches);
     }
     catch (error) {
       this.setState({ isFetching: false });
@@ -36,6 +52,7 @@ export default class MainContainer extends React.Component {
 
   renderMatches = () => {
     const { matches=[], isFetching } = this.state;
+    console.log('matches: ', typeof matches);
     if (!matches.length) return null;
     return matches.map((match, idx) => {
       return <MatchBox key={idx} match={match} />
@@ -51,7 +68,10 @@ export default class MainContainer extends React.Component {
     );
   }
 
-  setFilter = filter => this.setState({ filter }, this.getMatches);
+  setFilter = filter => this.setState({ filter }, () => {
+    localStorage.setObj('filter', filter);
+    this.getMatches();
+  });
 
   render () {
     const { matches=[], isFetching, filter } = this.state;
@@ -68,7 +88,6 @@ export default class MainContainer extends React.Component {
         </div>}
         {matches.length > 0 &&
         <FilterContainer
-          getMatches={this.getMatches}
           isFetching={isFetching}
           filter={filter}
           setFilter={this.setFilter}

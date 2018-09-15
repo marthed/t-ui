@@ -6,6 +6,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 import './style.css';
+import './utils/storage.js';
 import MainContainer from './components/mainContainer.jsx';
 import Login from './components/login/login.jsx';
 
