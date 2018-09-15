@@ -1,4 +1,5 @@
 import React from 'react';
+import './filter.css';
 export default class RangeFilter extends React.Component {
 
   setMinValue = ({ target: { value }}) => {
