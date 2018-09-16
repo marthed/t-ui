@@ -52,7 +52,6 @@ export default class MainContainer extends React.Component {
 
   renderMatches = () => {
     const { matches=[], isFetching } = this.state;
-    console.log('matches: ', typeof matches);
     if (!matches.length) return null;
     return matches.map((match, idx) => {
       return <MatchBox key={idx} match={match} />
@@ -60,6 +59,7 @@ export default class MainContainer extends React.Component {
     .concat(
       <div key="load-more" className="button-container__more-matches">
         <button
+          tabIndex={-1}
           disabled={isFetching}
           onClick={this.getMatches}>
           {isFetching ? "Hämtar..." :"Ladda fler matchningar"}

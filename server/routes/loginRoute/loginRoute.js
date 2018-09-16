@@ -198,7 +198,7 @@ module.exports = async function login(req, res) {
   }
   catch (error) {
     console.log(error);
-    res.json({
+    res.status(500).json({
       message: error.message,
       code: error.code
     });
