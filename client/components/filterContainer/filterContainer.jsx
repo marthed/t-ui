@@ -2,6 +2,7 @@ import React from 'react';
 import RangeFilter from './filters/rangeFilter.jsx';
 import './filterContainer.css';
 import PropTypes from 'prop-types';
+import { pipe, mapValues, curry, omitBy, isEmpty } from 'lodash/fp';
 
 
 export default class FilterContainer extends React.Component {
@@ -20,43 +21,76 @@ export default class FilterContainer extends React.Component {
   }
 
   updateFilters = () => {
-    this.props.setFilter(this.state.tempFilter);
-    this.setState({ isOpen: false });
+    const { filter } = this.props;
+    const { tempFilter } = this.state;
+    const newFilter = 
+    pipe(
+      curry(mapValues(filter => omitBy(subFilter => !subFilter, filter))),
+      curry(omitBy)(isEmpty)
+    )({...filter, ...tempFilter });
+
+    this.props.setFilter(newFilter);
+    this.setState({ isOpen: false, tempFilter: {} });
+  }
+
+  translateFilter = filterName => {
+    switch (filterName) {
+      case 'distance': return 'Avstånd';
+      case 'birth_date': return 'Ålder';
+      default: 'Blaa';
+    };
+  }
+
+  filterToJsx = filter => {
+    const { max, min } = filter;
+    if (min && max) return `Mellan ${min} och ${max}`;
+    if (!min && max) return `Upp till ${max}`;
+    if (min && !max) return `Från och med ${min}`;
+    return 'Blaa bla bla';
   }
 
   renderClosedContainer = () => {
-    const { filters } = this.props;
+    const { filter } = this.props;
+    const selectedFilter = Object
+      .keys(filter)
+      .map(f => (
+      <div key={f} className="filter-container-closed__selected-filter">
+        {`${this.translateFilter(f)}: ${this.filterToJsx(filter[f])}`}
+      </div>));
     return (
-    <div className="filter-container-closed">
-      {filters &&
-      <div className="filter-container-closed__selected-filter">
+      <div className="filter-container-closed">
+        {selectedFilter}
       </div>
-      }
-    </div>
-    )
+    );
   };
+
 
   setTempFilter = type => filter => {
     const { tempFilter } = this.state;
     const filterToUpdate = tempFilter[type] || {};
     const updatedFilter = { ...filterToUpdate, ...filter };
-    this.setState({ tempFilter: { [type]: updatedFilter }});
+    this.setState({ tempFilter: { ...tempFilter, [type]: updatedFilter }});
   };
 
-  renderFilterOptions = () => (
+
+  renderFilterOptions = () => {
+    const { filter } = this.props;
+    const { tempFilter } = this.state;
+    return (
     <div className="filter-container-open__top">
       <RangeFilter
         label="Avstånd"
         setFilter={this.setTempFilter('distance')}
-        filter={this.state.tempFilter.distance || this.props.filter.distance}
+        filter={{ ...filter.distance, ...tempFilter.distance }}
         />
       <RangeFilter
         label="Ålder"
         setFilter={this.setTempFilter('birth_date')}
-        filter={this.state.tempFilter.birth_date || this.props.filter.birth_date}
+        filter={{ ...filter.birth_date, ...tempFilter.birth_date }}
         />
     </div>
-  );
+    );
+  };
 
   renderOpenContainer = () => {
     const { isFetching } = this.props;

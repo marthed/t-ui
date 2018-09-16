@@ -4,12 +4,15 @@ export default class RangeFilter extends React.Component {
 
   setMinValue = ({ target: { value }}) => {
     const minValue = parseInt(value);
-    this.props.setFilter({ min: minValue });
+    const { filter } = this.props;
+    this.props.setFilter({ min: minValue, max: filter.max });
   }
 
   setMaxValue = ({ target: { value }}) => {
     const maxValue = parseInt(value);
-    this.props.setFilter({ max: maxValue });
+    const { filter } = this.props;
+
+    this.props.setFilter({ max: maxValue, min: filter.min });
   }
 
   render () {
