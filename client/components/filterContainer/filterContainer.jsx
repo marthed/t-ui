@@ -11,7 +11,9 @@ export default class FilterContainer extends React.Component {
     isOpen: false,
     tempFilter: {},
   };
-  
+
+  toggleOpen = () => this.setState({ isOpen: !this.state.isOpen });
+
   clearFilters = () => {
     this.setState({ tempFilter: {}});
     this.props.setFilter({});
