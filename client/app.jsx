@@ -10,6 +10,7 @@ import './utils/storage.js';
 import MainContainer from './components/mainContainer.jsx';
 import Login from './components/login/login.jsx';
 
+const errorText = 'Något gick fel, prova igen.'
 class App extends React.Component {
 
   constructor(props) {
@@ -59,7 +60,7 @@ class App extends React.Component {
     }
     catch (error) {
       console.log('Error: ', error.message);
-      this.setState({ isLoggedIn: false, accessToken: null, isLoggingIn: false, userId: null });
+      this.setState({ errorText, isLoggedIn: false, accessToken: null, isLoggingIn: false, userId: null });
     }
   }
 
@@ -102,7 +103,7 @@ class App extends React.Component {
     }
     catch (error) {
       console.log(error.message);
-      this.setState({isLoggedIn: false, accessToken: null, isLoggingIn: false});
+      this.setState({ errorText, isLoggedIn: false, accessToken: null, isLoggingIn: false});
     }
   }
 
@@ -111,7 +112,7 @@ class App extends React.Component {
   }
 
   render () {
-    const { isLoggedIn, isLoggingIn, accessToken, confirmType, userId } = this.state;
+    const { isLoggedIn, isLoggingIn, accessToken, confirmType, userId, errorText } = this.state;
     return (
       <div className="app-container">
         <div className="main-title">T-UI</div>
@@ -122,6 +123,7 @@ class App extends React.Component {
                 isLoggingIn={isLoggingIn}
                 confirmType={confirmType}
                 confirmLogin={this.confirmLogin}
+                errorText={errorText}
               />
             }
         </div>

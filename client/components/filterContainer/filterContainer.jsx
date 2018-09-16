@@ -50,6 +50,11 @@ export default class FilterContainer extends React.Component {
         setFilter={this.setTempFilter('distance')}
         filter={this.state.tempFilter.distance || this.props.filter.distance}
         />
+      <RangeFilter
+        label="Ålder"
+        setFilter={this.setTempFilter('birth_date')}
+        filter={this.state.tempFilter.birth_date || this.props.filter.birth_date}
+        />
     </div>
   );
 

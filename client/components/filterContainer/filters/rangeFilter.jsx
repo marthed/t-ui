@@ -21,16 +21,12 @@ export default class RangeFilter extends React.Component {
         </label>
         <input
           type="number"
-          min={0}
-          max={filter.max || 1000}
-          value={filter.min || 0}
+          value={filter.min || ''}
           onChange={this.setMinValue}
           />
         <input
           type="number"
-          min={filter.min || 0}
-          max={1000}
-          value={filter.max || 1000}
+          value={filter.max || ''}
           onChange={this.setMaxValue}
           />
       </div>

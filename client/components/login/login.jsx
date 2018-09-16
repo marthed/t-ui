@@ -1,5 +1,5 @@
 import React from 'react';
-
+import PropTypes from 'prop-types';
 import './login.css';
 
 export default class Login extends React.Component {
@@ -72,7 +72,7 @@ export default class Login extends React.Component {
   }
 
   render() {
-    const { isLoggingIn, confirmType } = this.props;
+    const { isLoggingIn, confirmType, errorText } = this.props;
     const { email, password, missingInput } = this.state;
 
     return (
@@ -96,7 +96,16 @@ export default class Login extends React.Component {
       {missingInput &&
         <span className="login__missing-input"> {`Fyll i ${missingInput}`}</span>
       }
+      {errorText}
     </div>
     )
   }
+}
+
+Login.prototypes = {
+  onConfirm: PropTypes.func.isRequired,
+  confirmLogin: PropTypes.func.isRequired,
+  isLoggingIn: PropTypes.bool,
+  confirmType: PropTypes.string,
+  errorText: PropTypes.string,
 }
