@@ -17,11 +17,7 @@ export default class MainContainer extends React.Component {
 
   componentDidMount() {
     const matches = localStorage.getObj('matches');
-    console.log('matches: ', matches);
-    console.log('matches: ', typeof matches);
     const filter = localStorage.getObj('filter') || {};
-    console.log('filter: ', filter);
-    console.log('filter: ', typeof filter);
     if (matches) {
       this.setState({ matches, filter });
     }
@@ -35,7 +31,6 @@ export default class MainContainer extends React.Component {
   getMatches = async () => {
     const { accessToken } = this.props;
     const userId = sessionStorage.getItem('userId');
-    console.log('userId: ', userId);
     const filter = this.state.filter;
     this.setState({ isFetching: true });
 
@@ -78,6 +73,11 @@ export default class MainContainer extends React.Component {
 
     return (
       <div className="main-container">
+      <FilterContainer
+          isFetching={isFetching}
+          filter={filter}
+          setFilter={this.setFilter}
+        />
         {!matches.length && 
         <div className="button-container">
           <button
@@ -86,13 +86,6 @@ export default class MainContainer extends React.Component {
             {isFetching ? 'Hämtar...' : "Hämta alla matchningar"}
           </button>
         </div>}
-        {matches.length > 0 &&
-        <FilterContainer
-          isFetching={isFetching}
-          filter={filter}
-          setFilter={this.setFilter}
-        />
-        }
         <div className="main-container__matches">
           {this.renderMatches()}
         </div>
