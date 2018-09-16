@@ -13,7 +13,7 @@ const getMatchValue = path => match => get(path, match);
 
 
 const isWithinDistance = filter => pipe(
-  getMatchValue('distance'),
+  getMatchValue('distance_mi'),
   isWithinRange(filter),
 );
 
