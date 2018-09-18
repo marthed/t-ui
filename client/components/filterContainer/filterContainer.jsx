@@ -26,8 +26,8 @@ export default class FilterContainer extends React.Component {
     pipe(
       curry(mapValues(filter => omitBy(subFilter => !subFilter, filter))),
       curry(omitBy)(isEmpty)
-    )({...filter, ...tempFilter });
-
+      )({...filter, ...tempFilter });
+      
     this.props.setFilter(newFilter);
     this.setState({ isOpen: false, tempFilter: {} });
   }
@@ -63,7 +63,6 @@ export default class FilterContainer extends React.Component {
     );
   };
 
-
   setTempFilter = type => filter => {
     const { tempFilter } = this.state;
     const filterToUpdate = tempFilter[type] || {};
@@ -71,44 +70,17 @@ export default class FilterContainer extends React.Component {
     this.setState({ tempFilter: { ...tempFilter, [type]: updatedFilter }});
   };
 
-
-  renderFilterOptions = () => {
-    const { filter } = this.props;
-    const { tempFilter } = this.state;
-    return (
-    <div className="filter-container-open__top">
-      <RangeFilter
-        label="Avstånd"
-        setFilter={this.setTempFilter('distance')}
-        filter={{ ...filter.distance, ...tempFilter.distance }}
-        />
-      <RangeFilter
-        label="Ålder"
-        setFilter={this.setTempFilter('birth_date')}
-        filter={{ ...filter.birth_date, ...tempFilter.birth_date }}
-        />
-    </div>
-    );
-  };
-
-  setTempFilter = type => filter => {
-    const { tempFilter } = this.state;
-    const filterToUpdate = tempFilter[type] || {};
-    const updatedFilter = { ...filterToUpdate, ...filter };
-    this.setState({ tempFilter: { [type]: updatedFilter }});
-  };
-
   renderFilterOptions = () => (
     <div className="filter-container-open__top">
       <RangeFilter
         label="Avstånd"
         setFilter={this.setTempFilter('distance')}
-        filter={this.state.tempFilter.distance || this.props.filter.distance}
+        filter={{...this.props.filter.distance, ...this.state.tempFilter.distance }}
         />
       <RangeFilter
         label="Ålder"
         setFilter={this.setTempFilter('birth_date')}
-        filter={this.state.tempFilter.birth_date || this.props.filter.birth_date}
+        filter={{...this.props.filter.birth_date, ...this.state.tempFilter.birth_date}}
         />
     </div>
   );
