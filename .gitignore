@@ -3,4 +3,6 @@ server/routes/accessToken.js
 server/routes/creds.js
 server/routes/matchesRoute/storedMatches
 server/ssl
-public
+public/dist
+public/images
+public/debug
