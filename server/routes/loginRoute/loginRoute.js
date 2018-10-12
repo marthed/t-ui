@@ -101,7 +101,7 @@ module.exports = async function login(req, res) {
     await page.goto(FACEBOOK_LOGIN_URL);
 
     const startPage = await page.content();
-      fs.writeFileSync('./public/startPage.html', startPage);
+      fs.writeFileSync('./public/debug/startPage.html', startPage);
 
     await timeOut();
 
@@ -125,7 +125,7 @@ module.exports = async function login(req, res) {
     await navResponse;
 
     const docOne = await page.content();
-    fs.writeFileSync('./public/first.html', docOne);
+    fs.writeFileSync('./public/debug/first.html', docOne);
 
     const isAskingForIdentity = await page.evaluate((sel) => {
       return document.querySelector(sel).innerHTML === 'Bekräfta din identitet';
@@ -137,7 +137,7 @@ module.exports = async function login(req, res) {
       await timeOut();
 
       const identityPage1 = await page.content();
-      fs.writeFileSync('./public/identity1.html', identityPage1);
+      fs.writeFileSync('./public/debug/identity1.html', identityPage1);
 
       const radioButtons = await page.$$('input[type=radio]');
 
@@ -148,7 +148,7 @@ module.exports = async function login(req, res) {
       await timeOut();
 
       const identityPage2 = await page.content();
-      fs.writeFileSync('./public/identity2.html', identityPage2);
+      fs.writeFileSync('./public/debug/identity2.html', identityPage2);
 
       setPage(page);
 
@@ -188,7 +188,7 @@ module.exports = async function login(req, res) {
     }
 
     const docTwo = await page.content();
-    fs.writeFileSync('./public/second.html', docTwo);
+    fs.writeFileSync('./public/debug/second.html', docTwo);
     
     //browser.disconnect();
 
