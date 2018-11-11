@@ -178,14 +178,19 @@ module.exports = async function login(req, res) {
       }
     });
 
-    await timeOut();
-    const confirmButton = await page.$(CONFIRM_BUTTOM_SELECTOR);
+    const interval = setInterval(async () => {
+      const confirmButton = await page.$(CONFIRM_BUTTOM_SELECTOR);
+      console.log(`Found the confirm button: ${confirmButton}`);
+      if (confirmButton) {
+        page.evaluate(e => e.click(), confirmButton);
+        setTimeout(() => {
+          console.log('Disconnecting from the browser');
+          browser.disconnect();
+        }, 10000);
+        clearInterval(interval);
+      }
 
-    if (confirmButton) {
-      console.log('click confirm button');
-      page.evaluate(e => e.click(), confirmButton);
-      await timeOut();
-    }
+    }, 500);
 
     const docTwo = await page.content();
     fs.writeFileSync('./public/debug/second.html', docTwo);
