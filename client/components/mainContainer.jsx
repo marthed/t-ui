@@ -46,6 +46,7 @@ export default class MainContainer extends React.Component {
   renderMatches = () => {
     const { matches = [], isFetching } = this.state;
     if (!matches.length) return null;
+    console.log(matches);
     return matches
       .map((match, idx) => {
         return (
@@ -73,7 +74,7 @@ export default class MainContainer extends React.Component {
   };
 
   closeMatchModal = () => {
-    console.log('CLOSE MATCH MODAL!');
+    console.log('CLOSE MATCH MODAL!')
     this.setState({ shouldRenderModal: false, selectedMatch: null });
   };
 
