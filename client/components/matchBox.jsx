@@ -31,21 +31,22 @@ export default class MatchBox extends React.Component {
 
   render() {
     const { match, onClick } = this.props;
+    const { person } = match;
 
     return (
       <div className="match-box" onClick={() => onClick(match._id)}>
         <span>
-          <img src={match.photos[0].url} height="150" />
+          <img src={person.photos[0].url} height="150" />
           <div>
-            <b>{match.name}</b>
+            <b>{person.name}</b>
           </div>
-          <div>{this.renderBirthDate(match.birth_date)}</div>
-          <div>Avstånd: {match.distance_mi} Km</div>
-          <div>{this.renderJobs(match.jobs)}</div>
-          <div>{this.renderSchools(match.schools)}</div>
+          <div>{this.renderBirthDate(person.birth_date)}</div>
+          <div>Avstånd: {person.distance_mi} Km</div>
+          <div>{this.renderJobs(person.jobs)}</div>
+          <div>{this.renderSchools(person.schools)}</div>
         </span>
         <br />
-        <span>{match.bio}</span>
+        <span>{person.bio}</span>
       </div>
     );
   }
@@ -53,12 +54,15 @@ export default class MatchBox extends React.Component {
 
 MatchBox.propTypes = {
   match: PropTypes.shape({
-    photos: PropTypes.arrayOf(PropTypes.shape({ url: PropTypes.string})),
-    name: PropTypes.string.isRequired,
-    distance_mi: PropTypes.number.isRequired,
-    jobs: PropTypes.arrayOf({}),
-    schools: PropTypes.arrayOf({ name: PropTypes.string }),
-    bio: PropTypes.string,
+    person: PropTypes.shape({
+      photos: PropTypes.arrayOf(PropTypes.shape({ url: PropTypes.string})),
+      name: PropTypes.string.isRequired,
+      distance_mi: PropTypes.number.isRequired,
+      jobs: PropTypes.arrayOf({}),
+      schools: PropTypes.arrayOf({ name: PropTypes.string }),
+      bio: PropTypes.string,
+    }).isRequired,
+    _id: PropTypes.string.isRequired
   }).isRequired,
   onClick: PropTypes.func
 }

@@ -1,4 +1,4 @@
-const { get, pipe } = require('lodash/fp');
+const { get, getOr, pipe } = require('lodash/fp');
 const moment = require('moment');
 
 
@@ -13,11 +13,13 @@ const getMatchValue = path => match => get(path, match);
 
 
 const isWithinDistance = filter => pipe(
+  getOr({}, 'person'),
   getMatchValue('distance_mi'),
   isWithinRange(filter),
 );
 
 const isWithinAge = filter => pipe(
+  getOr({}, 'person'),
   getMatchValue('birth_date'),
   matchValue => moment().diff(moment(matchValue).valueOf(), 'years'),
   isWithinRange(filter),

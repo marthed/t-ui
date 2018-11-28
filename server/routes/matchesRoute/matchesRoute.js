@@ -4,14 +4,10 @@ const _ = require("lodash/fp");
 const { storeMatchesFromTinder, getStoredMatches } = require("./matches.js");
 const filterMatches = require("./filterMatches.js");
 
-let currentAccessToken;
-
 async function getAllMatchesFromTinder(req, res) {
+  console.log('getAllMatchesFromTinder: ', getAllMatchesFromTinder);
   try {
     const { userId, accessToken, filter = {} } = req.body;
-
-    currentAccessToken = accessToken;
-    console.log('currentAccessToken: ', currentAccessToken);
 
     if (!userId) {
       return res
@@ -83,25 +79,26 @@ async function getMatchesFromAllPages(accessToken, pageToken, allMatches = []) {
   );
 }
 
-async function getDataFromMatch(
+async function getPersonDataFromMatch(
   accessToken,
-  matchIds,
+  matches,
   updatedMatches = [],
   idx = 0
 ) {
-  const matchId = matchIds[idx];
-  if (!matchId) return updatedMatches;
+  const match = matches[idx];
+  const personId = _.get('person._id', match);
+  if (!personId) return updatedMatches;
 
   try {
     const res = await tinderRequest(
-      `https://api.gotinder.com/user/${matchId}?locale=en-GB`,
+      `https://api.gotinder.com/user/${personId}?locale=sv`,
       "GET",
       accessToken
     );
-    return getDataFromMatch(
+    return getPersonDataFromMatch(
       accessToken,
-      matchIds,
-      [{ ...res.results }, ...updatedMatches],
+      matches,
+      [{ person: {...res.results }, ...match }, ...updatedMatches],
       idx + 1
     );
   } catch (error) {
@@ -126,10 +123,7 @@ async function getMatchesFromTinderPage(accessToken, pageToken) {
     );
     const { matches = [], next_page_token = undefined } = data;
     console.log("Getting more data for the matches");
-    const matchIds = matches.map(
-      match => console.log("Match: ", match) || _.get("person._id", match)
-    );
-    const matchesWithMoreData = await getDataFromMatch(accessToken, matchIds);
+    const matchesWithMoreData = await getPersonDataFromMatch(accessToken, matches);
 
     if (!matchesWithMoreData.length)
       return { matches: matchesWithMoreData, next_page_token: undefined };
@@ -147,6 +141,8 @@ async function getMatchesFromTinderPage(accessToken, pageToken) {
 
 async function getMatchFromId(req, res) {
   const { matchId } = req.params;
+  const { a } = req.headers;
+  let currentAccessToken = a;
   if (!matchId) {
     return res
       .status(400)
@@ -154,16 +150,16 @@ async function getMatchFromId(req, res) {
   }
   console.log('currentAccessToken: ', currentAccessToken);
   try {
-    const res = await tinderRequest(
+    const tinderResponse = await tinderRequest(
       `https://api.gotinder.com/v2/matches/${matchId}`,
       'GET',
       currentAccessToken
     );
-    console.log("res: ", res);
-    return { match: res.data };
+    return res.status(200).json({ match: tinderResponse.data });
   } catch (error) {
     console.log(`ERROR when getting a match with id ${matchId}`);
     console.log(":", error.status || error.code || error.message);
+    console.log(error.statusMessage);
     console.log(error.stack);
     console.log("\n \n ");
     return res
