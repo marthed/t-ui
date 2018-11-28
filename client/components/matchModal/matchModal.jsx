@@ -23,16 +23,36 @@ export default class MatchModal extends React.Component {
   };
 
   render() {
+    const { person } = this.props.selectedMatch;
     return (
       <div className="match-modal">
-        <div ref={this.setModalRef} className="match-modal-content">
-        {this.props.selectedMatch}</div>
+        <div ref={this.setModalRef} className="match-modal-content__media-slider-wrapper">
+          <div className="match-modal-content__media-slider" >
+            {[].concat(person.photos).map(photo => {
+              console.log('photo: ', photo);
+              const photoUrl = photo.processedFiles[0].url;
+              return <img key={photo.id} src={photoUrl}/>
+            })}
+          </div>
+      </div>
+        {/* <div ref={this.setModalRef} className="match-modal-content">
+        </div> */}
       </div>
     );
   }
 }
 
 MatchModal.propTypes = {
-  selectedMatch: PropTypes.string.isRequired,
+  selectedMatch: PropTypes.shape({
+    person: PropTypes.shape({
+      photos: PropTypes.arrayOf(PropTypes.shape({ url: PropTypes.string})),
+      name: PropTypes.string.isRequired,
+      distance_mi: PropTypes.number.isRequired,
+      jobs: PropTypes.arrayOf({}),
+      schools: PropTypes.arrayOf({ name: PropTypes.string }),
+      bio: PropTypes.string,
+    }).isRequired,
+    _id: PropTypes.string.isRequired
+  }).isRequired,
   onOutsideClick: PropTypes.func.isRequired
 };

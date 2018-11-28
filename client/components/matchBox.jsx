@@ -34,7 +34,7 @@ export default class MatchBox extends React.Component {
     const { person } = match;
 
     return (
-      <div className="match-box" onClick={() => onClick(match._id)}>
+      <div className="match-box" onClick={() => onClick(match)}>
         <span>
           <img src={person.photos[0].url} height="150" />
           <div>
