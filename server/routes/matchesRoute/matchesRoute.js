@@ -46,7 +46,7 @@ async function getAllMatchesFromTinder(req, res) {
   }
 }
 
-async function tinderRequest(url, method, accessToken) {
+async function tinderRequest(url, method, accessToken, postData) {
   const { data } = await axios.request({
     url,
     method,
@@ -55,7 +55,8 @@ async function tinderRequest(url, method, accessToken) {
       "Content-type": "application/json",
       "User-agent":
         "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36"
-    }
+    },
+    data: postData
   });
   return data;
 }
@@ -170,8 +171,48 @@ async function getMatchFromId(req, res) {
   }
 }
 
+async function sendMessage(req, res) {
+  const { matchId } = req.params;
+  const { a } = req.headers;
+  console.log('matchId: ', matchId);
+  console.log('a : ', a );
+  console.log(req.body);
+
+  const { message } = req.body;
+  console.log('message: ', message);
+  let currentAccessToken = a;
+  if (!matchId) {
+    return res
+      .status(400)
+      .json({ message: `matchId: ${matchId} is not valid` });
+  }
+  console.log('currentAccessToken: ', currentAccessToken);
+  try {
+    const tinderResponse = await tinderRequest(
+      `https://api.gotinder.com/user/matches/${matchId}`,
+      'POST',
+      currentAccessToken,
+      { message }
+      );
+    console.log('tinderResponse: ', tinderResponse);
+    console.log(`RES: ${tinderResponse.statusCode} message: ${tinderResponse.statusMessage}`);
+    return res.status(200).end();
+  } catch (error) {
+    console.log(`ERROR when sending a message with id ${matchId}`);
+    console.log(error.statusMessage);
+    console.log(error.stack);
+    console.log("\n \n ");
+    return res
+      .status(500)
+      .json({
+        message: "Something went wrong in the server. Contact yourself"
+      });
+  }
+}
+
 module.exports = {
   getMatchesFromTinderPage,
   getAllMatchesFromTinder,
-  getMatchFromId
+  getMatchFromId,
+  sendMessage,
 };
