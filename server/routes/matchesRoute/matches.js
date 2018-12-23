@@ -5,11 +5,12 @@ async function storeMatchesFromTinder(key, tinderMatches=[]) {
     const collection = await db.getCollection(`${key}MATCHES`);
     const lastUpdate = Date.now();
     return Promise.all(tinderMatches.forEach(async match => {
-      const storedMatch = await collection.findOne({ _id: match._id }).then(sm => sm);
+      const storedMatch = await collection.findOne({ _id: match.id });
       if (storedMatch) {
-        return collection.updateOne({ _id: match,_id }, { $set: { tinderMatches: match, lastUpdate: lastUpdate}})
+        console.log('Match already found, updating');
+        return collection.updateOne({ _id: match.id }, { $set: { tinderMatch: match, lastUpdate: lastUpdate}})
       }
-      return collection.insertOne({ _id: match,_id, tinderMatches: match, lastUpdate: lastUpdate})
+      return collection.insertOne({ _id: match.id, tinderMatches: match, lastUpdate: lastUpdate})
     }));
   }
   catch (e) {

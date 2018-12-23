@@ -35,6 +35,7 @@ async function getAllMatchesFromTinder(req, res) {
     console.log("Getting ALL matches from Tinder with token: ", accessToken);
     const matches = await getMatchesFromAllPages(accessToken, "first");
     if (!matches.length) throw new Error("Did not get any matches");
+    console.log('Storing matches...');
     await storeMatchesFromTinder(userId, matches);
 
     console.log(`Returning with ${matches.length} matches`);
@@ -72,7 +73,7 @@ async function getMatchesFromAllPages(accessToken, pageToken, allMatches = []) {
   console.log("matches: ", matches && matches.length);
   console.log("next_page_token: ", next_page_token);
   const aggregatedMatches = allMatches.concat(matches);
-  if (aggregatedMatches.length > 150) return aggregatedMatches;
+  if (aggregatedMatches.length > 50) return aggregatedMatches;
   return getMatchesFromAllPages(
     accessToken,
     next_page_token,

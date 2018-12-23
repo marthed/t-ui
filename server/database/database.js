@@ -1,62 +1,73 @@
-require('dotenv').config({ path: 'variables.env'})
-const mongo = require('mongodb').MongoClient;
+require("dotenv").config({ path: "variables.env" });
+const mongo = require("mongodb").MongoClient;
 const mongoURL = process.env.DATABASE;
 
-let mongodbConnection;
+let dB;
 
 const connectionOptions = {
   promiseLibrary: Promise,
-  useNewUrlParser: true,
+  useNewUrlParser: true
 };
 
 function setupEventListeners(db) {
-  db.on('error', error => console.log('mongoDB error', error));
-  db.on('close', () => {
-    console.log('mongoDB connection closed');
-    mongodbConnection = null;
+  db.on("error", error => console.log("mongoDB error", error));
+  db.on("close", () => {
+    console.log("mongoDB connection closed");
+    dB = null;
   });
-  db.on('reconnect', () => console.log('mongoDB reconnect'));
-  db.on('timeout', () => console.log('mongoDB timeout'));
+  db.on("reconnect", () => console.log("mongoDB reconnect"));
+  db.on("timeout", () => console.log("mongoDB timeout"));
+}
+
+async function doesCollectionExist(collectionName) {
+  console.log('collectionName: ', collectionName);
+  const collectionNames = await dB
+  .listCollections({ nameOnly: true })
+  .toArray();
+  console.log('collectionNames: ', collectionNames);
+  return collectionNames.filter(name => name === collectionName).length > 0;
+}
+
+function createCollection(collectionName) {
+  console.log(`Creating a collection with name: ${collectionName}`);
+  return dB.createCollection(collectionName);
 }
 
 async function getCollection(collectionName) {
-  let collection;
   try {
-    if (mongodbConnection) {
-      collection = await mongodbConnection.collection(collectionName);
-      console.log('collection: ', collection);
-      if (!collection.length) return Promise.resolve(createCollection(collectionName));
-      return collection;
+    if (dB) {
+      const collectionExists = await doesCollectionExist(collectionName);
+      if (!collectionExists) {
+        return createCollection(collectionName);
+      } else {
+        return dB.getCollection(collectionName);
       }
-  
-    await mongo
+    }
+
+    return mongo
       .connect(
         mongoURL,
         connectionOptions
       )
-      .then(client => {
-        console.log('Connected to Mongo');
+      .then(async client => {
+        console.log("Connected to Mongo");
         setupEventListeners(client);
-        mongodbConnection = client.db('TUI');
+        dB = client.db("TUI");
+        const collectionExists = await doesCollectionExist(collectionName);
+        if (!collectionExists) {
+          return createCollection(collectionName);
+        } else {
+          return dB.getCollection(collectionName);
+        }
       });
-      collection = await mongodbConnection.collection(collectionName);
-      console.log('collection: ', collection);
-      if (!collection.length) return Promise.resolve(createCollection(collectionName));
-      return collection;
-  }
-  catch (e) {
+  } catch (e) {
     console.log(e);
     return;
   }
 }
 
-function createCollection(collectionName) {
-  console.log(`Creating a collection with name: ${collectionName}`);
-  return mongodbConnection.createCollection(collectionName)
-}
-
 
 module.exports = {
   getCollection,
-  createCollection,
-}
+  createCollection
+};
