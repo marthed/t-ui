@@ -5,7 +5,7 @@ const { storeMatchesFromTinder, getStoredMatches } = require("./matches.js");
 const filterMatches = require("./filterMatches.js");
 
 async function getAllMatchesFromTinder(req, res) {
-  console.log('getAllMatchesFromTinder: ', getAllMatchesFromTinder);
+  console.log('Getting all matches from Tinder');
   try {
     const { userId, accessToken, filter = {} } = req.body;
 
@@ -20,9 +20,9 @@ async function getAllMatchesFromTinder(req, res) {
         .json({ message: `accessToken: ${accessToken} is not valid` });
     }
 
-    console.log(`Getting ALL matches for user ${userId}`);
-    const storedMatches = getStoredMatches(userId);
-    if (storedMatches) {
+    console.log(`Getting data for ${userId}`);
+    const storedMatches = await getStoredMatches(userId);
+    if (storedMatches.length) {
       console.log(`${storedMatches.length} stored matches found.`);
       const filteredMatches = filterMatches(storedMatches, filter);
       if (filteredMatches.length < storedMatches.length) {

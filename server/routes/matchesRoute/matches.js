@@ -1,30 +1,37 @@
+const db = require('../../database/database');
 
-const fs = require('fs');
-var path = require('path');
-
-let matches;
-
-async function storeMatchesFromTinder(key, m) {
-  matches = m;
-  await fs.writeFile(path.join(__dirname, `/storedMatches/${key}-matches.json`), JSON.stringify(m), 'utf8', function(){
-    console.log(`${path.join(__dirname, `/storedMatches/${key}-matches.json`)} stored`);
-  });
-  return;
-};
-
-function getStoredMatches(key) {
+async function storeMatchesFromTinder(key, tinderMatches=[]) {
   try {
-    const matchesFromFile = require(path.join(__dirname, `/storedMatches/${key}-matches.json`));
-    if (matchesFromFile) return matchesFromFile;
+    const collection = await db.getCollection(`${key}MATCHES`);
+    const lastUpdate = Date.now();
+    return Promise.all(tinderMatches.forEach(async match => {
+      const storedMatch = await collection.findOne({ _id: match._id }).then(sm => sm);
+      if (storedMatch) {
+        return collection.updateOne({ _id: match,_id }, { $set: { tinderMatches: match, lastUpdate: lastUpdate}})
+      }
+      return collection.insertOne({ _id: match,_id, tinderMatches: match, lastUpdate: lastUpdate})
+    }));
   }
   catch (e) {
-    console.log(e.message);
-    console.log(`Did not find stored matches for /storedMatches/${key}-matches.json`);
+    console.log('An Error occured when storing matches');
+    console.log(e);
+    return;
   }
-  if (matches) return matches;
+
+};
+
+async function getStoredMatches(key) {
+  try {
+    const collection = await db.getCollection(`${key}MATCHES`);
+    return collection.find({}).toArray();
+  }
+  catch (e) {
+    console.log('An error occured when fetching stored matches');
+    return [];
+  }
 }
 
 module.exports = {
   storeMatchesFromTinder,
-  getStoredMatches
+  getStoredMatches,
 }
