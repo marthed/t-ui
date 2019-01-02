@@ -4,6 +4,7 @@ import MatchModal from "./matchModal/matchModal.jsx";
 import FilterContainer from "./filterContainer/filterContainer.jsx";
 import { getMatches } from "../utils/webAPI";
 import PropTypes from "prop-types";
+import { map } from 'lodash/fp'
 
 export default class MainContainer extends React.Component {
   constructor(props) {
@@ -34,7 +35,7 @@ export default class MainContainer extends React.Component {
     this.setState({ isFetching: true });
 
     try {
-      const matches = await getMatches({ accessToken, userId, filter });
+      const matches = await getMatches({ accessToken, userId, filter }).then(map(match =>({ ...match.tinderMatch, lastUpdate: match.lastUpdate })));
       this.setState({ matches, isFetching: false });
       localStorage.setObj("matches", matches);
     } catch (error) {

@@ -29,7 +29,6 @@ export default class MatchModal extends React.Component {
         <div ref={this.setModalRef} className="match-modal-content__media-slider-wrapper">
           <div className="match-modal-content__media-slider" >
             {[].concat(person.photos).map(photo => {
-              console.log('photo: ', photo);
               const photoUrl = photo.processedFiles[0].url;
               return <img key={photo.id} src={photoUrl}/>
             })}

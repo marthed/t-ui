@@ -10,7 +10,7 @@ async function storeMatchesFromTinder(key, tinderMatches=[]) {
         console.log('Match already found, updating');
         return collection.updateOne({ _id: match.id }, { $set: { tinderMatch: match, lastUpdate: lastUpdate}})
       }
-      return collection.insertOne({ _id: match.id, tinderMatches: match, lastUpdate: lastUpdate})
+      return collection.insertOne({ _id: match.id, tinderMatch: match, lastUpdate: lastUpdate})
     }));
   }
   catch (e) {
