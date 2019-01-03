@@ -19,17 +19,11 @@ async function storeMatchesFromTinder(key, tinderMatches=[]) {
     return;
   }
 
-};
+}
 
 async function getStoredMatches(key) {
-  try {
-    const collection = await db.getCollection(`${key}MATCHES`);
-    return collection.find({}).toArray();
-  }
-  catch (e) {
-    console.log('An error occured when fetching stored matches');
-    return [];
-  }
+  const collection = await db.getCollection(`${key}MATCHES`);
+  return collection.find({}).toArray();
 }
 
 module.exports = {
