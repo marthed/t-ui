@@ -46,7 +46,7 @@ MatchModal.propTypes = {
     person: PropTypes.shape({
       photos: PropTypes.arrayOf(PropTypes.shape({ url: PropTypes.string})),
       name: PropTypes.string.isRequired,
-      distance_mi: PropTypes.number.isRequired,
+      distance_mi: PropTypes.number,
       jobs: PropTypes.arrayOf({}),
       schools: PropTypes.arrayOf({ name: PropTypes.string }),
       bio: PropTypes.string,
