@@ -10,7 +10,7 @@ router.post('/login', loginRoute);
 router.post('/login/confirm', confirmLogin);
 router.use('/matches/*', validateClientRequest);
 router.post('/matches', getAllMatchesFromTinder);
-router.post('/matches/syncMatchesFromPage/:pageToken', syncMatchesFromTinderPage);
+router.post('/matches/syncMatchesFromPage/', syncMatchesFromTinderPage);
 router.get('/matches/:matchId', getMatchFromId);
 router.post('/matches/:matchId/sendMessage', sendMessage);
 // router.get('/message/id:messageId')

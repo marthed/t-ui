@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import "./matchModal.css";
+import React from 'react';
+import PropTypes from 'prop-types';
+import './matchModal.css';
 
 export default class MatchModal extends React.Component {
 
@@ -9,11 +9,11 @@ export default class MatchModal extends React.Component {
   }
 
   componentDidMount() {
-    document.addEventListener("click", this.onOutsideClick);
+    document.addEventListener('click', this.onOutsideClick);
   }
 
   componentWillUnmount() {
-    document.removeEventListener("click", this.onOutsideClick);
+    document.removeEventListener('click', this.onOutsideClick);
   }
 
   onOutsideClick = ({ target }) => {
@@ -33,7 +33,7 @@ export default class MatchModal extends React.Component {
               return <img key={photo.id} src={photoUrl}/>
             })}
           </div>
-      </div>
+        </div>
         {/* <div ref={this.setModalRef} className="match-modal-content">
         </div> */}
       </div>
@@ -51,7 +51,7 @@ MatchModal.propTypes = {
       schools: PropTypes.arrayOf({ name: PropTypes.string }),
       bio: PropTypes.string,
     }).isRequired,
-    _id: PropTypes.string.isRequired
+    _id: PropTypes.string.isRequired,
   }).isRequired,
-  onOutsideClick: PropTypes.func.isRequired
+  onOutsideClick: PropTypes.func.isRequired,
 };

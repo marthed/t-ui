@@ -28,13 +28,13 @@ class App extends React.Component {
   login = async (email, password) => {
     this.setState({isLoggingIn: true});
     try {
-     const res = await axios.request({
+      const res = await axios.request({
         url: '/login',
         method: 'POST',
         data: {
           email,
-          password
-        }
+          password,
+        },
       });
 
       console.log(res);
@@ -51,7 +51,7 @@ class App extends React.Component {
             isLoggedIn: true,
             isLoggingIn: false,
             userId: res.data.userId,
-            accessToken: res.data.tinderToken
+            accessToken: res.data.tinderToken,
           });
         sessionStorage.setItem('loginTime', moment().valueOf());
         sessionStorage.setItem('accessToken', res.data.tinderToken);
@@ -86,17 +86,17 @@ class App extends React.Component {
   confirmLogin = ({ type, value }) => async () => {
     this.setState({ isLoggingIn: true });
     try {
-     const res = await axios.request({
+      const res = await axios.request({
         url: '/login/confirm',
         method: 'POST',
         data: {
           type,
           value,
-        }
+        },
       });
       console.log('Confirm Login');
       console.log(res);
-      this.setState({ isLoggedIn: true, isLoggingIn: false, accessToken: res.data.tinderToken});
+      this.setState({ isLoggedIn: true, isLoggingIn: false, accessToken: res.data.tinderToken, userId: res.data.userId});
       sessionStorage.setItem('loginTime', moment().valueOf());
       sessionStorage.setItem('accessToken', res.data.tinderToken);
 
@@ -116,18 +116,18 @@ class App extends React.Component {
     return (
       <div className="app-container">
         <div className="main-title">T-UI</div>
-          {isLoggedIn ?
-            <MainContainer accessToken={accessToken} userId={userId}/> :
-              <Login
-                onConfirm={this.login}
-                isLoggingIn={isLoggingIn}
-                confirmType={confirmType}
-                confirmLogin={this.confirmLogin}
-                errorText={errorText}
-              />
-            }
-        </div>
-      )
+        {isLoggedIn ?
+          <MainContainer accessToken={accessToken} userId={userId}/> :
+          <Login
+            onConfirm={this.login}
+            isLoggingIn={isLoggingIn}
+            confirmType={confirmType}
+            confirmLogin={this.confirmLogin}
+            errorText={errorText}
+          />
+        }
+      </div>
+    )
   }
 }
 

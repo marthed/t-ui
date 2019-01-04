@@ -1,9 +1,9 @@
-const { storeMatchesFromTinder, getStoredMatches } = require('./matches.js');
+const { storeMatchesFromTinder, storeMiscData, getMiscData, getStoredMatches } = require('./matches.js');
 const filterMatches = require('./filterMatches.js');
 const {
   tinderRequest,
   getMatchesFromPage,
-  getMatchesFromAllPages,
+  getMatchesFromPages,
 } = require('./matchesHelper.js');
 
 function validateClientRequest(req, res, next) {
@@ -37,17 +37,19 @@ async function getAllMatchesFromTinder(req, res) {
   }
 
   console.log('Getting ALL matches from Tinder with token: ', accessToken);
-  const matches = await getMatchesFromAllPages(accessToken, 'first');
+  const { matches, next_page_token } = await getMatchesFromPages(accessToken, 'first');
   if (!matches.length) throw new Error('Did not get any matches');
   console.log('Storing matches...');
   await storeMatchesFromTinder(userId, matches);
+  await storeMiscData(userId, { pageToken: next_page_token });
 
   console.log(`Returning with ${matches.length} matches`);
   return res.status(200).json({ matches });
 }
 
 async function syncMatchesFromTinderPage(req, res) {
-  const { userId, accessToken, pageToken } = req.body;
+  const { userId, accessToken } = req.body;
+  const  { pageToken } = await getMiscData(userId, ['pageToken']);
   console.log('Syncing with page token: ', pageToken);
   const { matches, next_page_token } = await getMatchesFromPage(
     accessToken,
@@ -57,7 +59,8 @@ async function syncMatchesFromTinderPage(req, res) {
     throw new Error('Sync failed: Did not get any matches from pageToken');
   console.log('Updating matches and/or adding new...');
   await storeMatchesFromTinder(userId, matches);
-  return res.status(200).json({ matches, next_page_token });
+  await storeMiscData(userId, { pageToken: next_page_token });
+  return res.status(200).json({ matches });
 }
 
 async function getMatchFromId(req, res) {

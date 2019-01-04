@@ -2,9 +2,8 @@ import React from 'react';
 import MatchBox from './matchBox.jsx';
 import MatchModal from './matchModal/matchModal.jsx';
 import FilterContainer from './filterContainer/filterContainer.jsx';
-import { getMatches } from '../utils/webAPI';
+import { getMatches, getMatchesAndSync } from '../utils/webAPI';
 import PropTypes from 'prop-types';
-import { map } from 'lodash/fp'
 
 export default class MainContainer extends React.Component {
   constructor(props) {
@@ -28,16 +27,30 @@ export default class MainContainer extends React.Component {
     }
   }
 
-  getMatches = async () => {
-    const { accessToken } = this.props;
-    const userId = sessionStorage.getItem('userId');
+  getMatches = async route => {
+    const { accessToken, userId: propUserId } = this.props;
+    const userId = propUserId || sessionStorage.getItem('userId');
     const filter = this.state.filter;
     this.setState({ isFetching: true });
 
+    const matchRoutes = {
+      syncPage: getMatchesAndSync,
+    }
+
+    const getTheMatches = matchRoutes[route] || getMatches
+
     try {
-      const matches = await getMatches({ accessToken, userId, filter }).then(map(match =>({ ...match.tinderMatch, lastUpdate: match.lastUpdate })));
-      this.setState({ matches, isFetching: false });
-      localStorage.setObj('matches', matches);
+      const matches = await getTheMatches({ accessToken, userId, filter });
+      console.log('matches: ', matches);
+      let updatedMatches;
+      if (route) {
+        updatedMatches = this.state.matches.concat(matches);
+      }
+      else {
+        updatedMatches = this.state.matches;
+      }
+      this.setState({ matches: updatedMatches, isFetching: false });
+      localStorage.setObj('matches', updatedMatches);
     } catch (error) {
       this.setState({ isFetching: false });
       console.log(error);
@@ -47,7 +60,6 @@ export default class MainContainer extends React.Component {
   renderMatches = () => {
     const { matches = [], isFetching } = this.state;
     if (!matches.length) return null;
-    console.log(matches);
     return matches
       .map((match, idx) => {
         return (
@@ -69,15 +81,9 @@ export default class MainContainer extends React.Component {
       this.getMatches();
     });
 
-  openMatchModal = matchId => {
-    console.log('OPEN!');
-    this.setState({ shouldRenderModal: true, selectedMatch: matchId });
-  };
+  openMatchModal = matchId => this.setState({ shouldRenderModal: true, selectedMatch: matchId })
 
-  closeMatchModal = () => {
-    console.log('CLOSE MATCH MODAL!')
-    this.setState({ shouldRenderModal: false, selectedMatch: null });
-  };
+  closeMatchModal = () => this.setState({ shouldRenderModal: false, selectedMatch: null })
 
   render() {
     const {
@@ -96,6 +102,10 @@ export default class MainContainer extends React.Component {
             onOutsideClick={this.closeMatchModal}
           />
         ) : null}
+        <div className="info-container">
+          <label>Matchningar: </label><div>{matches.length} </div>
+          <button disabled={isFetching} onClick={() =>this.getMatches('syncPage')}>Synka fler matchningar</button>
+        </div>
         <FilterContainer
           isFetching={isFetching}
           filter={filter}
@@ -116,4 +126,5 @@ export default class MainContainer extends React.Component {
 
 MainContainer.propTypes = {
   accessToken: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
 };

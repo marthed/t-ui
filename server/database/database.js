@@ -22,7 +22,6 @@ function setupEventListeners(db) {
 async function doesCollectionExist(collectionName) {
   console.log('collectionName: ', collectionName);
   const collections = await dB.listCollections({}, { nameOnly: true }).toArray();
-  console.log('collectionNames: ', collections);
   return collections.filter(col => col.name === collectionName).length > 0;
 }
 
