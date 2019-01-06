@@ -26,7 +26,7 @@ export default class FilterContainer extends React.Component {
     pipe(
       curry(mapValues(filter => omitBy(subFilter => !subFilter, filter))),
       curry(omitBy)(isEmpty)
-      )({...filter, ...tempFilter });
+    )({...filter, ...tempFilter });
       
     this.props.setFilter(newFilter);
     this.setState({ isOpen: false, tempFilter: {} });
@@ -34,10 +34,10 @@ export default class FilterContainer extends React.Component {
 
   translateFilter = filterName => {
     switch (filterName) {
-      case 'distance': return 'Avstånd';
-      case 'birth_date': return 'Ålder';
-      default: 'Blaa';
-    };
+    case 'distance': return 'Avstånd';
+    case 'birth_date': return 'Ålder';
+    default: 'Blaa';
+    }
   }
 
   filterToJsx = filter => {
@@ -53,9 +53,9 @@ export default class FilterContainer extends React.Component {
     const selectedFilter = Object
       .keys(filter)
       .map(f => (
-      <div key={f} className="filter-container-closed__selected-filter">
-        {`${this.translateFilter(f)}: ${this.filterToJsx(filter[f])}`}
-      </div>));
+        <div key={f} className="filter-container-closed__selected-filter">
+          {`${this.translateFilter(f)}: ${this.filterToJsx(filter[f])}`}
+        </div>));
     return (
       <div className="filter-container-closed">
         {selectedFilter}
@@ -76,12 +76,12 @@ export default class FilterContainer extends React.Component {
         label="Avstånd"
         setFilter={this.setTempFilter('distance')}
         filter={{...this.props.filter.distance, ...this.state.tempFilter.distance }}
-        />
+      />
       <RangeFilter
         label="Ålder"
         setFilter={this.setTempFilter('birth_date')}
         filter={{...this.props.filter.birth_date, ...this.state.tempFilter.birth_date}}
-        />
+      />
     </div>
   );
 
@@ -111,7 +111,7 @@ export default class FilterContainer extends React.Component {
         <div
           className="filter-container__toggle-button"
           onClick={this.toggleOpen}
-          >
+        >
         </div>
         {isOpen ? this.renderOpenContainer() : this.renderClosedContainer()}
       </div>
@@ -121,6 +121,9 @@ export default class FilterContainer extends React.Component {
 
 FilterContainer.propTypes = {
   isFetching: PropTypes.bool.isRequired,
-  filter: PropTypes.shape({}).isRequired,
+  filter: PropTypes.shape({
+    distance: PropTypes.number,
+    birth_date: PropTypes.string,
+  }).isRequired,
   setFilter: PropTypes.func.isRequired,
 }

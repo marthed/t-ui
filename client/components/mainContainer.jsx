@@ -1,9 +1,9 @@
-import React from "react";
-import MatchBox from "./matchBox.jsx";
-import MatchModal from "./matchModal/matchModal.jsx";
-import FilterContainer from "./filterContainer/filterContainer.jsx";
-import { getMatches } from "../utils/webAPI";
-import PropTypes from "prop-types";
+import React from 'react';
+import MatchBox from './matchBox.jsx';
+import MatchModal from './matchModal/matchModal.jsx';
+import FilterContainer from './filterContainer/filterContainer.jsx';
+import { getMatches, syncMatches, getMetaData } from '../utils/webAPI';
+import PropTypes from 'prop-types';
 
 export default class MainContainer extends React.Component {
   constructor(props) {
@@ -11,42 +11,50 @@ export default class MainContainer extends React.Component {
     this.state = {
       matches: [],
       isFetching: false,
-      filter: {}
+      filter: {},
     };
   }
 
-  componentDidMount() {
-    const matches = localStorage.getObj("matches");
-    const filter = localStorage.getObj("filter") || {};
-    if (matches) {
-      this.setState({ matches, filter });
-    } else {
-      this.setState({ filter }, () => {
-        this.getMatches();
-      });
-    }
+  async componentDidMount() {
+    const { data } = await getMetaData({ totalMatches: true });
+    console.log('totalMatches: ', data.totalMatches);
+    await this.getMatches();
+    this.setState({ totalMatches: data.totalMatches || 0 })
   }
 
   getMatches = async () => {
-    const { accessToken } = this.props;
-    const userId = sessionStorage.getItem("userId");
+    const { accessToken, userId: propUserId } = this.props;
+    const userId = propUserId || sessionStorage.getItem('userId');
     const filter = this.state.filter;
     this.setState({ isFetching: true });
 
     try {
       const matches = await getMatches({ accessToken, userId, filter });
+      console.log('matches: ', matches);
       this.setState({ matches, isFetching: false });
-      localStorage.setObj("matches", matches);
     } catch (error) {
       this.setState({ isFetching: false });
       console.log(error);
     }
   };
 
+  syncMatches = async () => {
+    const { accessToken } = this.props;
+    this.setState({ isFetching: true });
+    try {
+      await syncMatches(accessToken);
+      const { totalMatches } = await getMetaData({ totalMatches: true });
+      this.setState({ totalMatches });
+
+    } catch (e) {
+      this.setState({ isFetching: false });
+      console.log(e);
+    }
+  }
+
   renderMatches = () => {
     const { matches = [], isFetching } = this.state;
     if (!matches.length) return null;
-    console.log(matches);
     return matches
       .map((match, idx) => {
         return (
@@ -56,7 +64,7 @@ export default class MainContainer extends React.Component {
       .concat(
         <div key="load-more" className="button-container__more-matches">
           <button tabIndex={-1} disabled={isFetching} onClick={this.getMatches}>
-            {isFetching ? "Hämtar..." : "Ladda fler matchningar"}
+            {isFetching ? 'Hämtar...' : 'Ladda fler matchningar'}
           </button>
         </div>
       );
@@ -64,19 +72,13 @@ export default class MainContainer extends React.Component {
 
   setFilter = filter =>
     this.setState({ filter }, () => {
-      localStorage.setObj("filter", filter);
+      localStorage.setObj('filter', filter);
       this.getMatches();
     });
 
-  openMatchModal = matchId => {
-    console.log('OPEN!');
-    this.setState({ shouldRenderModal: true, selectedMatch: matchId });
-  };
+  openMatchModal = matchId => this.setState({ shouldRenderModal: true, selectedMatch: matchId })
 
-  closeMatchModal = () => {
-    console.log('CLOSE MATCH MODAL!')
-    this.setState({ shouldRenderModal: false, selectedMatch: null });
-  };
+  closeMatchModal = () => this.setState({ shouldRenderModal: false, selectedMatch: null })
 
   render() {
     const {
@@ -84,7 +86,8 @@ export default class MainContainer extends React.Component {
       isFetching,
       filter,
       shouldRenderModal,
-      selectedMatch
+      selectedMatch,
+      totalMatches,
     } = this.state;
 
     return (
@@ -95,6 +98,10 @@ export default class MainContainer extends React.Component {
             onOutsideClick={this.closeMatchModal}
           />
         ) : null}
+        <div className="info-container">
+          <label>Matchningar: </label><div>{totalMatches} </div>
+          <button disabled={isFetching} onClick={this.syncMatches}>Synka fler matchningar</button>
+        </div>
         <FilterContainer
           isFetching={isFetching}
           filter={filter}
@@ -103,7 +110,7 @@ export default class MainContainer extends React.Component {
         {!matches.length && (
           <div className="button-container">
             <button disabled={isFetching} onClick={this.getMatches}>
-              {isFetching ? "Hämtar..." : "Hämta alla matchningar"}
+              {isFetching ? 'Hämtar...' : 'Hämta alla matchningar'}
             </button>
           </div>
         )}
@@ -114,5 +121,6 @@ export default class MainContainer extends React.Component {
 }
 
 MainContainer.propTypes = {
-  accessToken: PropTypes.string.isRequired
+  accessToken: PropTypes.string.isRequired,
+  userId: PropTypes.string.isRequired,
 };

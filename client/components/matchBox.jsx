@@ -1,11 +1,11 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React from 'react';
+import PropTypes from 'prop-types';
 
 export default class MatchBox extends React.Component {
   
   renderBirthDate = birthDate => {
-    if (!birthDate) return "";
-    return birthDate.split("T")[0];
+    if (!birthDate) return '';
+    return birthDate.split('T')[0];
   };
 
   renderJobs = jobs => {
@@ -41,7 +41,7 @@ export default class MatchBox extends React.Component {
             <b>{person.name}</b>
           </div>
           <div>{this.renderBirthDate(person.birth_date)}</div>
-          <div>Avstånd: {person.distance_mi} Km</div>
+          {person.distance_mi ? <div>Avstånd: {person.distance_mi} Km</div> : null}
           <div>{this.renderJobs(person.jobs)}</div>
           <div>{this.renderSchools(person.schools)}</div>
         </span>
@@ -57,16 +57,16 @@ MatchBox.propTypes = {
     person: PropTypes.shape({
       photos: PropTypes.arrayOf(PropTypes.shape({ url: PropTypes.string})),
       name: PropTypes.string.isRequired,
-      distance_mi: PropTypes.number.isRequired,
+      distance_mi: PropTypes.number,
       jobs: PropTypes.arrayOf({}),
       schools: PropTypes.arrayOf({ name: PropTypes.string }),
       bio: PropTypes.string,
     }).isRequired,
-    _id: PropTypes.string.isRequired
+    _id: PropTypes.string.isRequired,
   }).isRequired,
-  onClick: PropTypes.func
+  onClick: PropTypes.func,
 }
 
 MatchBox.defaultProps = {
-  onClick: () => {}
+  onClick: () => {},
 }

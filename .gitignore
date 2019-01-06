@@ -6,3 +6,4 @@ server/ssl
 public/dist
 public/images
 public/debug
+variables.env
