@@ -17,6 +17,15 @@ export const getMatches = async data => {
   return matches;
 }
 
+export const getMatchFromId = async id => {
+  //const userId = sessionStorage.getItem('userId');
+  const accessToken = sessionStorage.getItem('accessToken');
+  const userId = sessionStorage.getItem('userId');
+  const res = await request('GET', `/matches/${id}`, { id: userId, token: accessToken });
+  console.log(res);
+  return;
+}
+
 export const syncMatches = async data => {
   const userId = sessionStorage.getItem('userId');
   return request('POST', '/matches/syncMatchesFromPage', {}, { userId, ...data})

@@ -1,7 +1,9 @@
 .match-modal {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   position: fixed;
+  justify-content: center;
+  align-items: center;
   left: 0;
   top: 0;
   width: 100%;
@@ -9,7 +11,28 @@
   background: rgba(1, 1, 1, 0.5);
 }
 
-.match-modal-content {
+.match-modal__container {
+  display: flex;
+  width: 96%;
+}
+
+.match-modal__media {
+  padding: 1px;
+  background: white;
+}
+
+.match-modal__messages {
+  padding: 1px;
+  background: white;
+  min-width: 200px;
+}
+
+.match-modal__person {
+  padding: 1px;
+  background: white;
+}
+
+/* .match-modal-content {
   width: 400px;
   height: 400px;
   background: white;
@@ -38,4 +61,4 @@
   margin-left: 5px;
   margin-right: 5px;
   background: white;
-}
+} */

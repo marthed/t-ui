@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import './matchModal.css';
+import { getMatchFromId } from './../../utils/webAPI';
+import { get } from 'lodash/fp';
 
 export default class MatchModal extends React.Component {
 
@@ -8,8 +10,12 @@ export default class MatchModal extends React.Component {
     this.modalRef = ref;
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     document.addEventListener('click', this.onOutsideClick);
+    // FETCH MESSAGES
+    const id = get('id', this.props.selectedMatch);
+    console.log('id: ', id);
+    await getMatchFromId(id)
   }
 
   componentWillUnmount() {
@@ -21,21 +27,27 @@ export default class MatchModal extends React.Component {
       this.props.onOutsideClick();
     }
   };
+  
+  // {[].concat(person.photos).map(photo => {
+  //   const photoUrl = photo.processedFiles[0].url;
+  //   return <img key={photo.id} src={photoUrl}/>
+  // })}
 
   render() {
     const { person } = this.props.selectedMatch;
     return (
       <div className="match-modal">
-        <div ref={this.setModalRef} className="match-modal-content__media-slider-wrapper">
-          <div className="match-modal-content__media-slider" >
-            {[].concat(person.photos).map(photo => {
-              const photoUrl = photo.processedFiles[0].url;
-              return <img key={photo.id} src={photoUrl}/>
-            })}
+        <div ref={this.setModalRef} className="match-modal__container">
+          <div className="match-modal__media">
+            <img src={person.photos[0].processedFiles[1].url} />
+          </div>
+          <div className="match-modal__messages">
+            Temp Messages
+          </div>
+          <div className="match-modal__person">
+            Temp Match Data
           </div>
         </div>
-        {/* <div ref={this.setModalRef} className="match-modal-content">
-        </div> */}
       </div>
     );
   }

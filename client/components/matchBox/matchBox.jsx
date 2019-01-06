@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
+import './matchBox.css';
 
 export default class MatchBox extends React.Component {
   
@@ -31,10 +33,14 @@ export default class MatchBox extends React.Component {
 
   render() {
     const { match, onClick } = this.props;
-    const { person } = match;
+    const { person, messages=[] } = match;
+
+    const classes = classNames('match-box', {
+      'match-box--hasMessages': messages.length,
+    });
 
     return (
-      <div className="match-box" onClick={() => onClick(match)}>
+      <div className={classes} onClick={() => onClick(match)}>
         <span>
           <img src={person.photos[0].url} height="150" />
           <div>

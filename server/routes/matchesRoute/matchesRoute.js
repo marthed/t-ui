@@ -67,21 +67,27 @@ async function syncMatchesFromTinderPage(req, res) {
 
 async function getMatchFromId(req, res) {
   const { matchId } = req.params;
-  const { a } = req.headers;
-  let currentAccessToken = a;
+  const { token } = req.headers;
+
+  if (!token) {
+    return res
+      .status(400)
+      .json({ message: `token: ${token} is not valid` });
+  }
+
   if (!matchId) {
     return res
       .status(400)
       .json({ message: `matchId: ${matchId} is not valid` });
   }
-  console.log('currentAccessToken: ', currentAccessToken);
+  console.log('currentAccessToken: ', token);
   try {
-    const tinderResponse = await tinderRequest(
+    const { data } = await tinderRequest(
       `https://api.gotinder.com/v2/matches/${matchId}`,
       'GET',
-      currentAccessToken
+      token
     );
-    return res.status(200).json({ match: tinderResponse.data });
+    return res.status(200).json({ match: data });
   } catch (error) {
     console.log(`ERROR when getting a match with id ${matchId}`);
     console.log(':', error.status || error.code || error.message);

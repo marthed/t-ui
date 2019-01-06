@@ -20,7 +20,6 @@ function setupEventListeners(db) {
 }
 
 async function doesCollectionExist(collectionName) {
-  console.log('collectionName: ', collectionName);
   const collections = await dB.listCollections({}, { nameOnly: true }).toArray();
   return collections.filter(col => col.name === collectionName).length > 0;
 }
@@ -34,7 +33,6 @@ async function getCollection(collectionName) {
   try {
     if (dB) {
       const collectionExists = await doesCollectionExist(collectionName);
-      console.log('collectionExists: ', collectionExists);
       if (!collectionExists) {
         return createCollection(collectionName);
       } else {
@@ -52,7 +50,6 @@ async function getCollection(collectionName) {
         setupEventListeners(client);
         dB = client.db('TUI');
         const collectionExists = await doesCollectionExist(collectionName);
-        console.log('collectionExists: ', collectionExists);
         if (!collectionExists) {
           return createCollection(collectionName);
         } else {

@@ -1,5 +1,5 @@
 import React from 'react';
-import MatchBox from './matchBox.jsx';
+import MatchBox from './matchBox/matchBox.jsx';
 import MatchModal from './matchModal/matchModal.jsx';
 import FilterContainer from './filterContainer/filterContainer.jsx';
 import { getMatches, syncMatches, getMetaData } from '../utils/webAPI';

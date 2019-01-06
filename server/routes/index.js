@@ -9,7 +9,7 @@ const { getMetaData } = require('./metaRoute/metaRoute');
 router.get('/', function(req, res) { res.send('index.html') });
 router.post('/login', loginRoute);
 router.post('/login/confirm', confirmLogin);
-router.use('/matches/*', validateClientRequest);
+//router.use('/matches/*', validateClientRequest);
 router.post('/matches', getAllMatchesFromTinder);
 router.post('/matches/syncMatchesFromPage/', syncMatchesFromTinderPage);
 router.get('/matches/:matchId', getMatchFromId);
