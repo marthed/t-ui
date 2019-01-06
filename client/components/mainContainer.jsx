@@ -30,7 +30,6 @@ export default class MainContainer extends React.Component {
 
     try {
       const matches = await getMatches({ accessToken, userId, filter });
-      console.log('matches: ', matches);
       this.setState({ matches, isFetching: false });
     } catch (error) {
       this.setState({ isFetching: false });
@@ -42,9 +41,10 @@ export default class MainContainer extends React.Component {
     const { accessToken } = this.props;
     this.setState({ isFetching: true });
     try {
-      await syncMatches(accessToken);
-      const { totalMatches } = await getMetaData({ totalMatches: true });
-      this.setState({ totalMatches });
+      await syncMatches({ accessToken });
+      const { data } = await getMetaData({ totalMatches: true });
+      console.log('totalMatches: ', data.totalMatches);
+      this.setState({ totalMatches: Number(data.totalMatches), isFetching: false });
 
     } catch (e) {
       this.setState({ isFetching: false });
@@ -99,8 +99,8 @@ export default class MainContainer extends React.Component {
           />
         ) : null}
         <div className="info-container">
-          <label>Matchningar: </label><div>{totalMatches} </div>
-          <button disabled={isFetching} onClick={this.syncMatches}>Synka fler matchningar</button>
+          <span>Matchningar: </span><div>{totalMatches} </div>
+          <button disabled={isFetching} onClick={this.syncMatches}>{isFetching ? 'Synkar...' : 'Synka fler matchningar'}</button>
         </div>
         <FilterContainer
           isFetching={isFetching}

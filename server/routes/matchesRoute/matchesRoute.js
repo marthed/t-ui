@@ -8,7 +8,9 @@ const {
 
 function validateClientRequest(req, res, next) {
   const { userId, accessToken } = req.body;
-
+  console.log('userId: ', userId);
+  console.log('accessToken: ', accessToken);
+  
   if (!userId) {
     return res.status(400).json({ message: `userId: ${userId} is not valid` });
   }

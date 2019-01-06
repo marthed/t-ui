@@ -19,7 +19,7 @@ export const getMatches = async data => {
 
 export const syncMatches = async data => {
   const userId = sessionStorage.getItem('userId');
-  return request('POST', '/matches/syncMatchesFromPage', { id: userId }, data)
+  return request('POST', '/matches/syncMatchesFromPage', {}, { userId, ...data})
 }
 
 export const getMetaData = async data => {
