@@ -17,13 +17,12 @@ export const getMatches = async data => {
   return matches;
 }
 
-export const getMatchFromId = async id => {
+export const getMessagesFromMatch = async id => {
   //const userId = sessionStorage.getItem('userId');
   const accessToken = sessionStorage.getItem('accessToken');
   const userId = sessionStorage.getItem('userId');
-  const res = await request('GET', `/matches/${id}`, { id: userId, token: accessToken });
-  console.log(res);
-  return;
+  const { data } = await request('GET', `/matches/${id}`, { id: userId, token: accessToken });
+  return data.match;
 }
 
 export const syncMatches = async data => {

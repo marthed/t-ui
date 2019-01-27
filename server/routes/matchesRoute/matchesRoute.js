@@ -65,7 +65,7 @@ async function syncMatchesFromTinderPage(req, res) {
   return res.status(200).json({ matches });
 }
 
-async function getMatchFromId(req, res) {
+async function getMessagesFromMatch(req, res) {
   const { matchId } = req.params;
   const { token } = req.headers;
 
@@ -81,12 +81,14 @@ async function getMatchFromId(req, res) {
       .json({ message: `matchId: ${matchId} is not valid` });
   }
   console.log('currentAccessToken: ', token);
+  const query = 'count=100&locale=sv'
   try {
     const { data } = await tinderRequest(
-      `https://api.gotinder.com/v2/matches/${matchId}`,
+      `https://api.gotinder.com/v2/matches/${matchId}/messages?${query}`,
       'GET',
       token
     );
+    console.log('data: ', data);
     return res.status(200).json({ match: data });
   } catch (error) {
     console.log(`ERROR when getting a match with id ${matchId}`);
@@ -145,6 +147,6 @@ module.exports = {
   syncMatchesFromTinderPage,
   getAllMatchesFromTinder,
   validateClientRequest,
-  getMatchFromId,
+  getMessagesFromMatch,
   sendMessage,
 };

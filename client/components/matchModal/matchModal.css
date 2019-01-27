@@ -25,11 +25,30 @@
   padding: 1px;
   background: white;
   min-width: 200px;
+  max-width: 600px;
+  overflow: scroll;
 }
 
 .match-modal__person {
   padding: 1px;
   background: white;
+}
+
+.match-modal__message {
+  padding: 1px;
+  border-bottom: slategray;
+
+}
+
+.match-modal__message--match {
+  text-align: right;
+  background: rgba(199, 76, 46, 0.561)
+}
+
+.match-modal__message--me {
+  text-align: left;
+  background: rgba(49, 102, 216, 0.561)
+
 }
 
 /* .match-modal-content {
