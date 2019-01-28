@@ -47,6 +47,15 @@ export default class MatchModal extends React.Component {
     });
   };
 
+  renderMatchData = () => {
+    const { person } = this.props.selectedMatch;
+    return (
+      <div className="match-modal__match-data">
+        {person._id}
+      </div>
+    )
+  }
+
   // {[].concat(person.photos).map(photo => {
   //   const photoUrl = photo.processedFiles[0].url;
   //   return <img key={photo.id} src={photoUrl}/>
@@ -62,7 +71,7 @@ export default class MatchModal extends React.Component {
             <img src={person.photos[0].processedFiles[1].url} />
           </div>
           <div className="match-modal__messages">{this.renderMessages()}</div>
-          <div className="match-modal__person">Temp Match Data</div>
+          <div className="match-modal__person">{this.renderMatchData()}</div>
         </div>
       </div>
     );
