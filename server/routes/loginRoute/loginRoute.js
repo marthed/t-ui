@@ -1,7 +1,8 @@
 const axios = require('axios');
 const fs = require('fs');
+const { get } = require('lodash/fp');
 
-const { getBrowser, setPage } = require('./browser');
+const { getBrowser } = require('./browser');
 const {
   EMAIL_SELECTOR,
   PASSWORD_SELECTOR,
@@ -9,8 +10,6 @@ const {
   CONFIRM_BUTTOM_SELECTOR,
   CONFIRM_URL,
   FACEBOOK_LOGIN_URL,
-  CONTINUE_BUTTON,
-  CONFIRM_IDENTITY_SELECTOR,
 } = require('./loginConstants');
 
 
@@ -21,7 +20,7 @@ function timeOut(time=3000) {
 async function getUserId(accessToken) {
   const { data } = await axios.request({
     url: `https://graph.facebook.com/me?access_token=${accessToken}`,
-    method: 'GET'
+    method: 'GET',
   });
   return data;
 }
@@ -33,18 +32,21 @@ function extractTokenData(text) {
   return { accessToken, expiresIn };
 }
 
-async function tinderLogin(accessToken, userId) {
-  const { data: { token }} = await axios.request({
-    url: 'https://api.gotinder.com/auth',
+async function tinderLogin(accessToken) {
+  const  response = await axios.request({
+    url: 'https://api.gotinder.com/v2/auth/login/facebook?locale=sv',
     method: 'POST',
     headers: {
       'Content-type': 'application/json',
-      'User-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36'
+      'User-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36',
     },
-    data: JSON.stringify({facebook_token: accessToken, facebook_id: userId})
+    data: JSON.stringify({token: accessToken }),
   });
+  console.log('response: ', response);
+  const token = get('data.api_token', response.data);
+  console.log('token: ', token);
   return token;
-};
+}
 
 
 setPageOn = (page, res, browser) => {
@@ -101,7 +103,7 @@ module.exports = async function login(req, res) {
     await page.goto(FACEBOOK_LOGIN_URL);
 
     const startPage = await page.content();
-      fs.writeFileSync('./public/debug/startPage.html', startPage);
+    fs.writeFileSync('./public/debug/startPage.html', startPage);
 
     await timeOut();
 
@@ -119,45 +121,6 @@ module.exports = async function login(req, res) {
     await page.keyboard.type(password);
     await page.setJavaScriptEnabled(true); // Maybe remove
 
-    const navResponse = page.waitForNavigation(['networkidle0']);
-    page.click(LOGIN_BUTTON_SELECTOR);
-    console.log('login button selector');
-    await navResponse;
-
-    const docOne = await page.content();
-    fs.writeFileSync('./public/debug/first.html', docOne);
-
-    const isAskingForIdentity = await page.evaluate((sel) => {
-      return document.querySelector(sel).innerHTML === 'Bekräfta din identitet';
-    }, CONFIRM_IDENTITY_SELECTOR);
-    console.log('isAskingForIdentity: ', isAskingForIdentity);
-
-    if (isAskingForIdentity) {
-      page.click(CONTINUE_BUTTON);
-      await timeOut();
-
-      const identityPage1 = await page.content();
-      fs.writeFileSync('./public/debug/identity1.html', identityPage1);
-
-      const radioButtons = await page.$$('input[type=radio]');
-
-      await radioButtons[1].click();
-      await timeOut();
-
-      page.click(CONTINUE_BUTTON);
-      await timeOut();
-
-      const identityPage2 = await page.content();
-      fs.writeFileSync('./public/debug/identity2.html', identityPage2);
-
-      setPage(page);
-
-      return res.send({
-        confirmType: 'device',
-        message: 'Fortsätt genom att godkänna den här inloggningen på en telefon eller dator som du har använt tidigare.'
-      });
-    }
- 
     page.on('response', async response => {
       console.log('response: ', response.url());
       if (response.url().startsWith(CONFIRM_URL)) {
@@ -165,8 +128,9 @@ module.exports = async function login(req, res) {
         const body = await response.text();
         const { accessToken, expiresIn } = extractTokenData(body);
         const { name, id } = await getUserId(accessToken);
-        const token = await tinderLogin(accessToken, id);
+        const token = await tinderLogin(accessToken);
         console.log('tinderToken: ', token);
+        if (!token) throw new Error('Could not find tinder token in response');
         try {
           await page.close();
           browser.disconnect();
@@ -178,34 +142,20 @@ module.exports = async function login(req, res) {
       }
     });
 
-    const interval = setInterval(async () => {
-      const confirmButton = await page.$(CONFIRM_BUTTOM_SELECTOR);
-      console.log(`Found the confirm button: ${confirmButton}`);
-      if (confirmButton) {
-        page.evaluate(e => e.click(), confirmButton);
-        setTimeout(() => {
-          console.log('Disconnecting from the browser');
-          browser.disconnect();
-        }, 10000);
-        clearInterval(interval);
-      }
+    const navResponse = page.waitForNavigation(['networkidle0']);
+    page.click(LOGIN_BUTTON_SELECTOR);
+    console.log('login button selector');
+    await navResponse;
 
-    }, 500);
+    await timeOut(5000);
 
-    const docTwo = await page.content();
-    fs.writeFileSync('./public/debug/second.html', docTwo);
-    
-    //browser.disconnect();
-
-    //throw new Error('TimeOut: Did not receive confirm response');
-    // Close brower in SetTimeOut
-    // Use promise canceller if connected to before timeout.
+    return res.status(500).send({ message: 'Failed to login, try again'});
   }
   catch (error) {
     console.log(error);
     res.status(500).json({
       message: error.message,
-      code: error.code
+      code: error.code,
     });
   }
 }
