@@ -40,7 +40,7 @@
     "express": "^4.16.3",
     "lodash": "^4.17.10",
     "moment": "^2.21.0",
-    "mongodb": "^3.1.10",
+    "mongodb": "^3.1.13",
     "nouislider": "^11.0.3",
     "prop-types": "^15.6.2",
     "puppeteer": "^1.2.0",
